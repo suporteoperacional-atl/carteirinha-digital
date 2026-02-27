@@ -20,11 +20,10 @@
             width: 350px;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             position: relative;
             z-index: 10;
         }
-        /* Marca d'água */
         .carteirinha::before {
             content: '';
             position: absolute;
@@ -50,19 +49,26 @@
         .logo-header { max-width: 150px; height: auto; }
         .foto {
             background: #f0f0f0;
-            width: 180px; height: 220px;
+            width: 180px;
+            height: 220px;
             margin: -30px auto 0;
             border-radius: 15px;
             border: 5px solid #2c5f8d;
             overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
             position: relative;
             z-index: 5;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .foto img { width: 100%; height: 100%; object-fit: cover; }
+        .foto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: none;
+        }
         .foto-placeholder {
             text-align: center;
             color: #999;
@@ -71,51 +77,77 @@
         }
         .info { padding: 25px; position: relative; z-index: 5; }
         .nome {
-            text-align: center; font-size: 22px; font-weight: bold;
-            color: #1e3a5f; margin-bottom: 20px; text-transform: uppercase;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            text-transform: uppercase;
             line-height: 1.3;
         }
         .row { margin-bottom: 15px; }
-        .label { 
-            font-size: 11px; color: #666; 
-            text-transform: uppercase; 
-            margin-bottom: 4px; 
-            font-weight: 600; 
+        .label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 600;
         }
         .value {
-            font-size: 16px; color: #1e3a5f; font-weight: 600;
-            background: #f0f7ff; padding: 10px 15px;
-            border-radius: 10px; border-left: 4px solid #2c5f8d;
+            font-size: 16px;
+            color: #1e3a5f;
+            font-weight: 600;
+            background: #f0f7ff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2c5f8d;
         }
         .qr-section {
-            margin-top: 25px; padding: 20px;
+            margin-top: 25px;
+            padding: 20px;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px; text-align: center;
+            border-radius: 15px;
+            text-align: center;
         }
         .qr-label {
-            font-size: 12px; color: #666;
-            text-transform: uppercase; margin-bottom: 10px;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 10px;
             font-weight: 600;
         }
         .qr-code {
             width: 140px; height: 140px;
             background: white; padding: 8px;
-            border-radius: 12px; border: 3px solid #2c5f8d;
+            border-radius: 12px;
+            border: 3px solid #2c5f8d;
             margin: 0 auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .qr-code img { width: 100%; height: 100%; }
         .qr-instruction {
-            font-size: 13px; color: #1e3a5f;
-            margin-top: 12px; line-height: 1.5;
+            font-size: 13px;
+            color: #1e3a5f;
+            margin-top: 12px;
+            line-height: 1.5;
             font-weight: 500;
         }
         .footer {
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
-            padding: 15px; text-align: center;
-            color: white; font-size: 11px;
-            opacity: 0.9; position: relative;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-size: 11px;
+            opacity: 0.9;
+            position: relative;
             z-index: 5;
+        }
+        .foto-erro {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            padding: 10px;
+            display: none;
         }
     </style>
 </head>
@@ -124,157 +156,168 @@
         <div class="header">
             <img src="https://drive.google.com/uc?export=view&id=1I8PMoW21EiFFrjwrLzuWELs_YUr6xtJr" class="logo-header" alt="Atlântico Shopping">
         </div>
-        
+
         <div class="foto" id="foto-container">
-            <img id="foto" style="display:none;" alt="Foto">
+            <img id="foto" alt="Foto do Funcionário">
             <div class="foto-placeholder" id="foto-placeholder">📷<br>FOTO 3x4</div>
         </div>
-        
+
         <div class="info">
             <div class="nome" id="nome">NOME DO FUNCIONÁRIO</div>
-            
+
             <div class="row">
                 <div class="label">Loja</div>
                 <div class="value" id="loja">Nome da Loja</div>
             </div>
-            
+
             <div class="row">
                 <div class="label">Função</div>
                 <div class="value" id="funcao">Funcionário</div>
             </div>
-            
-            <!-- RG ou CPF -->
+
             <div class="row" id="row-documento">
                 <div class="label" id="label-doc">Documento</div>
-                <div class="value" id="val-doc">00.000.000-0</div>
+                <div class="value" id="val-doc">—</div>
             </div>
-            
+
             <div class="qr-section">
                 <div class="qr-label">🔍 QR Code de Validação</div>
                 <div class="qr-code">
                     <img id="qrcode" src="" alt="QR Code">
                 </div>
-                <div class="qr-instruction">
-                    Apresente este código ao segurança
-                </div>
+                <div class="qr-instruction">Apresente este código ao segurança</div>
             </div>
         </div>
-        
-        <div class="footer">
-            Carteirinha Digital Atlântico Shopping
-        </div>
+
+        <div class="footer">Carteirinha Digital Atlântico Shopping</div>
     </div>
 
     <script>
-        // Função para ler parâmetros da URL
-        function getUrlParameter(name) {
+        function getParam(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
             var results = regex.exec(location.search);
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // Função para extrair URL de objeto AppSheet
-        function extrairUrlFoto(fotoParam) {
-            if (!fotoParam || fotoParam.trim() === '') {
-                return null;
-            }
-            
+        // Converte qualquer formato de link do Google Drive para URL direta de imagem
+        function processarUrlFoto(fotoParam) {
+            if (!fotoParam || fotoParam.trim() === '') return null;
+
+            var url = fotoParam.trim();
+
+            // Formato JSON do AppSheet: {"Url":"https://..."}
             try {
-                // Tenta fazer parse como JSON (formato AppSheet)
-                var obj = JSON.parse(fotoParam);
-                if (obj.Url && obj.Url.trim() !== '') {
-                    return obj.Url;
-                }
-                return null;
-            } catch (e) {
-                // Se não for JSON, assume que é uma URL direta
-                if (fotoParam.startsWith('http')) {
-                    return fotoParam;
-                }
-                return null;
+                var obj = JSON.parse(url);
+                if (obj.Url) url = obj.Url.trim();
+            } catch(e) {}
+
+            // Já é URL do Drive com export=view — usa proxy para evitar CORS
+            if (url.includes('drive.google.com/uc') && url.includes('export=view')) {
+                var id = url.match(/id=([^&]+)/);
+                if (id) return montarUrlsAlternativas(id[1]);
             }
+
+            // Formato: drive.google.com/file/d/ID/view
+            var match = url.match(/\/file\/d\/([^\/\?&]+)/);
+            if (match) return montarUrlsAlternativas(match[1]);
+
+            // Formato: drive.google.com/open?id=ID
+            var matchOpen = url.match(/[?&]id=([^&]+)/);
+            if (matchOpen) return montarUrlsAlternativas(matchOpen[1]);
+
+            // Formato: id direto (sem http) — coluna virtual do AppSheet
+            if (!url.startsWith('http') && url.length > 10) {
+                return montarUrlsAlternativas(url);
+            }
+
+            // URL direta de outra origem
+            if (url.startsWith('http')) return [url];
+
+            return null;
         }
 
-        // Preenche os dados da carteirinha
+        // Retorna lista de URLs para tentar em ordem (fallback)
+        function montarUrlsAlternativas(id) {
+            return [
+                'https://drive.google.com/thumbnail?id=' + id + '&sz=w400',
+                'https://lh3.googleusercontent.com/d/' + id,
+                'https://drive.google.com/uc?export=view&id=' + id,
+            ];
+        }
+
+        // Tenta carregar foto com fallback automático entre URLs
+        function tentarCarregarFoto(urls, index) {
+            if (!urls || index >= urls.length) {
+                document.getElementById('foto-placeholder').style.display = 'flex';
+                document.getElementById('foto').style.display = 'none';
+                console.warn('Todas as tentativas de carregar a foto falharam.');
+                return;
+            }
+
+            var img = document.getElementById('foto');
+            var url = urls[index];
+            console.log('Tentativa ' + (index + 1) + ':', url);
+
+            img.onload = function() {
+                console.log('Foto carregada com sucesso:', url);
+                img.style.display = 'block';
+                document.getElementById('foto-placeholder').style.display = 'none';
+            };
+
+            img.onerror = function() {
+                console.warn('Falhou:', url);
+                tentarCarregarFoto(urls, index + 1);
+            };
+
+            img.src = url;
+        }
+
         window.onload = function() {
-            console.log('URL atual:', window.location.href);
-            
-            // Lê os parâmetros da URL
-            var nome = getUrlParameter('nome');
-            var loja = getUrlParameter('loja');
-            var funcao = getUrlParameter('funcao');
-            var rg = getUrlParameter('rg');
-            var cpf = getUrlParameter('cpf');
-            var fotoParam = getUrlParameter('foto');
+            var nome    = getParam('nome');
+            var loja    = getParam('loja');
+            var funcao  = getParam('funcao');
+            var rg      = getParam('rg');
+            var cpf     = getParam('cpf');
+            var foto    = getParam('foto');
 
-            console.log('Parâmetros lidos:', {nome, loja, funcao, rg, cpf, fotoParam});
+            console.log('Parâmetros:', { nome, loja, funcao, rg, cpf, foto });
 
-            // Preenche os campos
-            if (nome && nome.trim() !== '') {
-                document.getElementById('nome').textContent = nome.toUpperCase();
-            }
-            
-            if (loja && loja.trim() !== '') {
-                document.getElementById('loja').textContent = loja;
-            }
-            
-            if (funcao && funcao.trim() !== '') {
-                document.getElementById('funcao').textContent = funcao;
-            }
-            
-            // LÓGICA: Mostra RG OU CPF (prioriza RG)
-            var rowDocumento = document.getElementById('row-documento');
+            if (nome)   document.getElementById('nome').textContent = nome.toUpperCase();
+            if (loja)   document.getElementById('loja').textContent = loja;
+            if (funcao) document.getElementById('funcao').textContent = funcao;
+
+            // RG ou CPF
+            var rowDoc   = document.getElementById('row-documento');
             var labelDoc = document.getElementById('label-doc');
-            var valDoc = document.getElementById('val-doc');
-            
+            var valDoc   = document.getElementById('val-doc');
+
             if (rg && rg.trim() !== '') {
                 labelDoc.textContent = 'Documento (RG)';
                 valDoc.textContent = rg;
-                rowDocumento.style.display = 'block';
+                rowDoc.style.display = 'block';
             } else if (cpf && cpf.trim() !== '') {
                 labelDoc.textContent = 'CPF';
                 valDoc.textContent = cpf;
-                rowDocumento.style.display = 'block';
+                rowDoc.style.display = 'block';
             } else {
-                rowDocumento.style.display = 'none';
-            }
-            
-            // Foto - trata tanto URL direta quanto objeto AppSheet
-            var urlFoto = extrairUrlFoto(fotoParam);
-            console.log('URL da foto extraída:', urlFoto);
-            
-            if (urlFoto) {
-                var imgFoto = document.getElementById('foto');
-                var placeholder = document.getElementById('foto-placeholder');
-                
-                imgFoto.src = urlFoto;
-                imgFoto.onload = function() {
-                    console.log('Foto carregada com sucesso');
-                    imgFoto.style.display = 'block';
-                    placeholder.style.display = 'none';
-                };
-                imgFoto.onerror = function() {
-                    console.error('Erro ao carregar foto:', urlFoto);
-                    imgFoto.style.display = 'none';
-                    placeholder.style.display = 'block';
-                };
+                rowDoc.style.display = 'none';
             }
 
-            // QR Code - usa QuickChart (mais confiável)
+            // Foto com sistema de fallback
+            var urls = processarUrlFoto(foto);
+            console.log('URLs para tentar:', urls);
+            if (urls && urls.length > 0) {
+                tentarCarregarFoto(urls, 0);
+            }
+
+            // QR Code
             var urlAtual = window.location.href;
-            var qrCodeUrl = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlAtual) + '&size=400';
-            
-            var imgQR = document.getElementById('qrcode');
-            imgQR.src = qrCodeUrl;
-            
-            imgQR.onerror = function() {
-                console.error('Erro ao gerar QR Code');
-                // Tenta alternativa
+            var qr = document.getElementById('qrcode');
+            qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlAtual) + '&size=400';
+            qr.onerror = function() {
                 this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlAtual);
             };
-            
-            console.log('QR Code gerado para:', urlAtual);
         };
     </script>
 </body>
