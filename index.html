@@ -19,7 +19,6 @@
             padding: 24px;
         }
 
-        /* Fundo decorativo */
         body::before {
             content: '';
             position: fixed;
@@ -48,7 +47,6 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* Marca d'água de fundo */
         .carteirinha::before {
             content: '';
             position: absolute;
@@ -235,9 +233,7 @@
             justify-content: space-between;
         }
 
-        .validade-texto {
-            flex: 1;
-        }
+        .validade-texto { flex: 1; }
 
         .validade-titulo {
             font-size: 10px;
@@ -270,6 +266,114 @@
             opacity: 0.85;
         }
 
+        /* ══════════════════════════════════
+           TELA DE CANCELAMENTO
+        ══════════════════════════════════ */
+        #tela-cancelada {
+            display: none;
+            position: absolute;
+            inset: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.98);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 24px;
+            text-align: center;
+            border-radius: 24px;
+        }
+
+        #tela-cancelada.ativo {
+            display: flex;
+        }
+
+        .cancel-icone {
+            width: 90px;
+            height: 90px;
+            background: #fff0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 3px solid #CC0000;
+            animation: pulseRed 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulseRed {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.3); }
+            50%       { box-shadow: 0 0 0 16px rgba(204,0,0,0); }
+        }
+
+        .cancel-icone svg {
+            width: 46px;
+            height: 46px;
+        }
+
+        .cancel-titulo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #CC0000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .cancel-divider {
+            width: 50px;
+            height: 3px;
+            background: #CC0000;
+            border-radius: 2px;
+            margin: 0 auto 18px;
+            opacity: 0.35;
+        }
+
+        .cancel-subtitulo {
+            font-size: 13.5px;
+            color: #666;
+            font-weight: 500;
+            line-height: 1.65;
+            margin-bottom: 22px;
+            max-width: 260px;
+        }
+
+        .cancel-nome {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #1e3a5f;
+            text-transform: uppercase;
+            background: #f0f4f8;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #CC0000;
+            margin-bottom: 10px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .cancel-data {
+            font-size: 11.5px;
+            color: #aaa;
+            font-weight: 500;
+            margin-bottom: 26px;
+        }
+
+        .cancel-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #CC0000;
+            color: white;
+            padding: 9px 22px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
         /* ── FOOTER ── */
         .footer {
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
@@ -287,7 +391,35 @@
 <body>
     <div class="carteirinha">
 
-        <!-- HEADER com logo visível -->
+        <!-- ══ TELA DE CANCELAMENTO (sobrepõe tudo) ══ -->
+        <div id="tela-cancelada">
+            <div class="cancel-icone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#CC0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+            </div>
+
+            <div class="cancel-titulo">Carteirinha Cancelada</div>
+            <div class="cancel-divider"></div>
+
+            <div class="cancel-subtitulo">
+                Este funcionário não está mais vinculado ao Atlântico Shopping.<br>O acesso foi revogado.
+            </div>
+
+            <div class="cancel-nome" id="cancel-nome-exibido">—</div>
+            <div class="cancel-data" id="cancel-data-exibida"></div>
+
+            <div class="cancel-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+                Acesso Negado
+            </div>
+        </div>
+
+        <!-- HEADER -->
         <div class="header">
             <img src="logo_branco.png" class="logo-header" alt="Atlântico Shopping">
         </div>
@@ -328,7 +460,7 @@
                 <div class="qr-instruction">Apresente este código ao segurança</div>
             </div>
 
-            <!-- VALIDADE (visível somente quando ativada) -->
+            <!-- VALIDADE -->
             <div class="validade-bar" id="validade-bar">
                 <div class="validade-inner">
                     <div class="validade-texto">
@@ -359,7 +491,6 @@
                 var obj = JSON.parse(url);
                 if (obj.Url) url = obj.Url.trim();
             } catch(e) {}
-
             if (url.includes('drive.google.com/uc') && url.includes('export=view')) {
                 var id = url.match(/id=([^&]+)/);
                 if (id) return montarUrlsAlternativas(id[1]);
@@ -405,12 +536,31 @@
             var foto     = getParam('foto');
             var validade = getParam('validade');
             var emissao  = getParam('emissao');
+            var status   = getParam('status').toLowerCase().trim();
 
+            // ══════════════════════════════════════════
+            //  CANCELAMENTO — detecta &status=cancelada
+            // ══════════════════════════════════════════
+            if (status === 'cancelada' || status === 'cancelado') {
+                var tela = document.getElementById('tela-cancelada');
+                tela.classList.add('ativo');
+
+                if (nome) {
+                    document.getElementById('cancel-nome-exibido').textContent = nome.toUpperCase();
+                }
+                if (emissao) {
+                    document.getElementById('cancel-data-exibida').textContent = 'Carteirinha emitida em ' + emissao;
+                }
+                return; // Encerra aqui — não renderiza nada mais
+            }
+
+            // ══════════════════════════════════════════
+            //  CARTEIRINHA ATIVA — fluxo normal
+            // ══════════════════════════════════════════
             if (nome)   document.getElementById('nome').textContent = nome.toUpperCase();
             if (loja)   document.getElementById('loja').textContent = loja;
             if (funcao) document.getElementById('funcao').textContent = funcao;
 
-            // Documento: RG ou CPF
             var rowDoc   = document.getElementById('row-documento');
             var labelDoc = document.getElementById('label-doc');
             var valDoc   = document.getElementById('val-doc');
@@ -424,11 +574,9 @@
                 rowDoc.style.display = 'block';
             }
 
-            // Foto
             var urls = processarUrlFoto(foto);
             if (urls && urls.length > 0) tentarCarregarFoto(urls, 0);
 
-            // QR Code
             var urlAtual = window.location.href;
             var qr = document.getElementById('qrcode');
             qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlAtual) + '&size=400';
@@ -436,7 +584,6 @@
                 this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlAtual);
             };
 
-            // Validade — só exibe se o parâmetro existir (carteirinha ativada)
             if (validade && validade.trim() !== '') {
                 var bar = document.getElementById('validade-bar');
                 bar.style.display = 'block';
