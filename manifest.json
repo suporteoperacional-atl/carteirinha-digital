@@ -2,7 +2,6 @@
   "name": "Carteirinha Digital - Atlântico Shopping",
   "short_name": "Carteirinha",
   "description": "Carteirinha digital do funcionário Atlântico Shopping",
-  "start_url": ".",
   "display": "standalone",
   "background_color": "#1e3a5f",
   "theme_color": "#1e3a5f",
