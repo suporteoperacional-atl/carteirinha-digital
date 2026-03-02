@@ -4,69 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carteirinha Digital - Atlântico Shopping</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #0d2540 0%, #1a3f6f 50%, #0d2540 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 24px;
         }
+
+        /* Fundo decorativo */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(44,95,141,0.4) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(30,58,95,0.5) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
         .carteirinha {
-            background: white;
-            width: 350px;
-            border-radius: 20px;
+            background: #ffffff;
+            width: 360px;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255,255,255,0.08);
             position: relative;
             z-index: 10;
+            animation: fadeUp 0.5s ease both;
         }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Marca d'água de fundo */
         .carteirinha::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background-image: url('logo_branco.png');
-            background-position: center;
-            background-size: 150px;
+            background-position: center 40%;
+            background-size: 180px;
             background-repeat: no-repeat;
-            opacity: 0.05;
+            opacity: 0.04;
             pointer-events: none;
             z-index: 1;
         }
+
+        /* ── HEADER ── */
         .header {
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
-            padding: 16px 20px;
+            padding: 0 20px;
+            height: 80px;
             display: flex;
-            justify-content: flex-start;
             align-items: center;
-            height: 90px;
+            justify-content: flex-start;
             position: relative;
             z-index: 5;
         }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0; right: 0;
+            height: 12px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
+            clip-path: ellipse(55% 100% at 50% 0%);
+        }
+
         .logo-header {
-            max-width: 140px;
-            height: auto;
-            
-            margin-left: 4px;
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+            object-position: left center;
+            display: block;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
         }
-        .foto {
-            background: #f0f0f0;
-            width: 180px;
-            height: 220px;
-            margin: -30px auto 0;
-            border-radius: 15px;
-            border: 5px solid #2c5f8d;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+
+        /* ── FOTO ── */
+        .foto-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 24px;
             position: relative;
             z-index: 5;
+        }
+
+        .foto {
+            width: 160px;
+            height: 195px;
+            border-radius: 14px;
+            border: 4px solid #2c5f8d;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+            background: #f0f4f8;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .foto img {
             width: 100%;
             height: 100%;
@@ -74,99 +121,185 @@
             object-position: center top;
             display: none;
         }
+
         .foto-placeholder {
             text-align: center;
-            color: #999;
-            font-size: 14px;
-            padding: 20px;
-        }
-        .info { padding: 25px; position: relative; z-index: 5; }
-        .nome {
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            color: #1e3a5f;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            line-height: 1.3;
-        }
-        .row { margin-bottom: 15px; }
-        .label {
-            font-size: 11px;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
-        .value {
-            font-size: 16px;
-            color: #1e3a5f;
-            font-weight: 600;
-            background: #f0f7ff;
-            padding: 10px 15px;
-            border-radius: 10px;
-            border-left: 4px solid #2c5f8d;
-        }
-        .qr-section {
-            margin-top: 25px;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            text-align: center;
-        }
-        .qr-label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        .qr-code {
-            width: 140px; height: 140px;
-            background: white; padding: 8px;
-            border-radius: 12px;
-            border: 3px solid #2c5f8d;
-            margin: 0 auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .qr-code img { width: 100%; height: 100%; }
-        .qr-instruction {
+            color: #aab5c3;
             font-size: 13px;
-            color: #1e3a5f;
-            margin-top: 12px;
-            line-height: 1.5;
-            font-weight: 500;
+            line-height: 1.6;
         }
-        .footer {
-            background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
-            padding: 15px;
-            text-align: center;
-            color: white;
-            font-size: 11px;
-            opacity: 0.9;
+
+        /* ── INFO ── */
+        .info {
+            padding: 20px 22px 0;
             position: relative;
             z-index: 5;
         }
-        .foto-erro {
+
+        .nome {
             text-align: center;
-            color: #999;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 19px;
+            font-weight: 900;
+            color: #1e3a5f;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.25;
+        }
+
+        .row { margin-bottom: 12px; }
+
+        .label {
+            font-size: 10px;
+            color: #8a96a8;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .value {
+            font-size: 15px;
+            color: #1e3a5f;
+            font-weight: 600;
+            background: #f0f7ff;
+            padding: 9px 14px;
+            border-radius: 10px;
+            border-left: 4px solid #2c5f8d;
+        }
+
+        /* ── QR ── */
+        .qr-section {
+            margin: 18px 22px 0;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8f9fb 0%, #eef2f7 100%);
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .qr-label {
+            font-size: 11px;
+            color: #8a96a8;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .qr-code {
+            width: 130px;
+            height: 130px;
+            background: white;
+            padding: 7px;
+            border-radius: 12px;
+            border: 3px solid #2c5f8d;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .qr-code img { width: 100%; height: 100%; }
+
+        .qr-instruction {
             font-size: 12px;
-            padding: 10px;
+            color: #5a7a99;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* ── VALIDADE ── */
+        .validade-bar {
             display: none;
+            margin: 18px 22px 0;
+            background: linear-gradient(135deg, #fff0f0 0%, #ffe4e4 100%);
+            border: 2px solid #CC0000;
+            border-radius: 14px;
+            padding: 14px 18px;
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .validade-bar::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 5px;
+            background: #CC0000;
+        }
+
+        .validade-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .validade-texto {
+            flex: 1;
+        }
+
+        .validade-titulo {
+            font-size: 10px;
+            color: #CC0000;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .validade-data {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #CC0000;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .emissao-info {
+            font-size: 10px;
+            color: #e06060;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .validade-icone {
+            font-size: 28px;
+            margin-left: 12px;
+            opacity: 0.85;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
+            padding: 14px;
+            text-align: center;
+            color: rgba(255,255,255,0.75);
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 5;
         }
     </style>
 </head>
 <body>
     <div class="carteirinha">
+
+        <!-- HEADER com logo visível -->
         <div class="header">
             <img src="logo_branco.png" class="logo-header" alt="Atlântico Shopping">
         </div>
 
-        <div class="foto" id="foto-container">
-            <img id="foto" alt="Foto do Funcionário">
-            <div class="foto-placeholder" id="foto-placeholder">📷<br>FOTO 3x4</div>
+        <!-- FOTO -->
+        <div class="foto-wrap">
+            <div class="foto" id="foto-container">
+                <img id="foto" alt="Foto do Funcionário">
+                <div class="foto-placeholder" id="foto-placeholder">📷<br>FOTO 3x4</div>
+            </div>
         </div>
 
+        <!-- DADOS -->
         <div class="info">
             <div class="nome" id="nome">NOME DO FUNCIONÁRIO</div>
 
@@ -180,11 +313,12 @@
                 <div class="value" id="funcao">Funcionário</div>
             </div>
 
-            <div class="row" id="row-documento">
+            <div class="row" id="row-documento" style="display:none">
                 <div class="label" id="label-doc">Documento</div>
                 <div class="value" id="val-doc">—</div>
             </div>
 
+            <!-- QR CODE -->
             <div class="qr-section">
                 <div class="qr-label">🔍 QR Code de Validação</div>
                 <div class="qr-code">
@@ -192,9 +326,21 @@
                 </div>
                 <div class="qr-instruction">Apresente este código ao segurança</div>
             </div>
+
+            <!-- VALIDADE (visível somente quando ativada) -->
+            <div class="validade-bar" id="validade-bar">
+                <div class="validade-inner">
+                    <div class="validade-texto">
+                        <div class="validade-titulo">⚠️ Válida até</div>
+                        <div class="validade-data" id="validade-data">—</div>
+                        <div class="emissao-info" id="emissao-info"></div>
+                    </div>
+                    <div class="validade-icone">📅</div>
+                </div>
+            </div>
         </div>
 
-        <div class="footer">Carteirinha Digital Atlântico Shopping</div>
+        <div class="footer">Carteirinha Digital · Atlântico Shopping</div>
     </div>
 
     <script>
@@ -205,44 +351,27 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // Converte qualquer formato de link do Google Drive para URL direta de imagem
         function processarUrlFoto(fotoParam) {
             if (!fotoParam || fotoParam.trim() === '') return null;
-
             var url = fotoParam.trim();
-
-            // Formato JSON do AppSheet: {"Url":"https://..."}
             try {
                 var obj = JSON.parse(url);
                 if (obj.Url) url = obj.Url.trim();
             } catch(e) {}
 
-            // Já é URL do Drive com export=view — usa proxy para evitar CORS
             if (url.includes('drive.google.com/uc') && url.includes('export=view')) {
                 var id = url.match(/id=([^&]+)/);
                 if (id) return montarUrlsAlternativas(id[1]);
             }
-
-            // Formato: drive.google.com/file/d/ID/view
             var match = url.match(/\/file\/d\/([^\/\?&]+)/);
             if (match) return montarUrlsAlternativas(match[1]);
-
-            // Formato: drive.google.com/open?id=ID
             var matchOpen = url.match(/[?&]id=([^&]+)/);
             if (matchOpen) return montarUrlsAlternativas(matchOpen[1]);
-
-            // Formato: id direto (sem http) — coluna virtual do AppSheet
-            if (!url.startsWith('http') && url.length > 10) {
-                return montarUrlsAlternativas(url);
-            }
-
-            // URL direta de outra origem
+            if (!url.startsWith('http') && url.length > 10) return montarUrlsAlternativas(url);
             if (url.startsWith('http')) return [url];
-
             return null;
         }
 
-        // Retorna lista de URLs para tentar em ordem (fallback)
         function montarUrlsAlternativas(id) {
             return [
                 'https://drive.google.com/thumbnail?id=' + id + '&sz=w400',
@@ -251,52 +380,39 @@
             ];
         }
 
-        // Tenta carregar foto com fallback automático entre URLs
         function tentarCarregarFoto(urls, index) {
             if (!urls || index >= urls.length) {
                 document.getElementById('foto-placeholder').style.display = 'flex';
                 document.getElementById('foto').style.display = 'none';
-                console.warn('Todas as tentativas de carregar a foto falharam.');
                 return;
             }
-
             var img = document.getElementById('foto');
-            var url = urls[index];
-            console.log('Tentativa ' + (index + 1) + ':', url);
-
             img.onload = function() {
-                console.log('Foto carregada com sucesso:', url);
                 img.style.display = 'block';
                 document.getElementById('foto-placeholder').style.display = 'none';
             };
-
-            img.onerror = function() {
-                console.warn('Falhou:', url);
-                tentarCarregarFoto(urls, index + 1);
-            };
-
-            img.src = url;
+            img.onerror = function() { tentarCarregarFoto(urls, index + 1); };
+            img.src = urls[index];
         }
 
         window.onload = function() {
-            var nome    = getParam('nome');
-            var loja    = getParam('loja');
-            var funcao  = getParam('funcao');
-            var rg      = getParam('rg');
-            var cpf     = getParam('cpf');
-            var foto    = getParam('foto');
-
-            console.log('Parâmetros:', { nome, loja, funcao, rg, cpf, foto });
+            var nome     = getParam('nome');
+            var loja     = getParam('loja');
+            var funcao   = getParam('funcao');
+            var rg       = getParam('rg');
+            var cpf      = getParam('cpf');
+            var foto     = getParam('foto');
+            var validade = getParam('validade');
+            var emissao  = getParam('emissao');
 
             if (nome)   document.getElementById('nome').textContent = nome.toUpperCase();
             if (loja)   document.getElementById('loja').textContent = loja;
             if (funcao) document.getElementById('funcao').textContent = funcao;
 
-            // RG ou CPF
+            // Documento: RG ou CPF
             var rowDoc   = document.getElementById('row-documento');
             var labelDoc = document.getElementById('label-doc');
             var valDoc   = document.getElementById('val-doc');
-
             if (rg && rg.trim() !== '') {
                 labelDoc.textContent = 'Documento (RG)';
                 valDoc.textContent = rg;
@@ -305,16 +421,11 @@
                 labelDoc.textContent = 'CPF';
                 valDoc.textContent = cpf;
                 rowDoc.style.display = 'block';
-            } else {
-                rowDoc.style.display = 'none';
             }
 
-            // Foto com sistema de fallback
+            // Foto
             var urls = processarUrlFoto(foto);
-            console.log('URLs para tentar:', urls);
-            if (urls && urls.length > 0) {
-                tentarCarregarFoto(urls, 0);
-            }
+            if (urls && urls.length > 0) tentarCarregarFoto(urls, 0);
 
             // QR Code
             var urlAtual = window.location.href;
@@ -323,6 +434,16 @@
             qr.onerror = function() {
                 this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlAtual);
             };
+
+            // Validade — só exibe se o parâmetro existir (carteirinha ativada)
+            if (validade && validade.trim() !== '') {
+                var bar = document.getElementById('validade-bar');
+                bar.style.display = 'block';
+                document.getElementById('validade-data').textContent = validade;
+                if (emissao && emissao.trim() !== '') {
+                    document.getElementById('emissao-info').textContent = 'Emitida em ' + emissao;
+                }
+            }
         };
     </script>
 </body>
