@@ -34,9 +34,7 @@
             width: 360px;
             border-radius: 24px;
             overflow: hidden;
-            box-shadow:
-                0 30px 80px rgba(0,0,0,0.5),
-                0 0 0 1px rgba(255,255,255,0.08);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
             position: relative;
             z-index: 10;
             animation: fadeUp 0.5s ease both;
@@ -267,9 +265,9 @@
         }
 
         /* ══════════════════════════════════
-           TELA DE CANCELAMENTO
+           TELAS DE BLOQUEIO (base comum)
         ══════════════════════════════════ */
-        #tela-cancelada {
+        .tela-bloqueio {
             display: none;
             position: absolute;
             inset: 0;
@@ -283,53 +281,44 @@
             border-radius: 24px;
         }
 
-        #tela-cancelada.ativo {
+        .tela-bloqueio.ativo {
             display: flex;
         }
 
-        .cancel-icone {
+        .bloqueio-icone {
             width: 90px;
             height: 90px;
-            background: #fff0f0;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 20px;
-            border: 3px solid #CC0000;
-            animation: pulseRed 1.8s ease-in-out infinite;
+            border: 3px solid;
         }
 
-        @keyframes pulseRed {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.3); }
-            50%       { box-shadow: 0 0 0 16px rgba(204,0,0,0); }
-        }
-
-        .cancel-icone svg {
+        .bloqueio-icone svg {
             width: 46px;
             height: 46px;
         }
 
-        .cancel-titulo {
+        .bloqueio-titulo {
             font-family: 'Montserrat', sans-serif;
             font-size: 22px;
             font-weight: 900;
-            color: #CC0000;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
         }
 
-        .cancel-divider {
+        .bloqueio-divider {
             width: 50px;
             height: 3px;
-            background: #CC0000;
             border-radius: 2px;
             margin: 0 auto 18px;
             opacity: 0.35;
         }
 
-        .cancel-subtitulo {
+        .bloqueio-subtitulo {
             font-size: 13.5px;
             color: #666;
             font-weight: 500;
@@ -338,7 +327,7 @@
             max-width: 260px;
         }
 
-        .cancel-nome {
+        .bloqueio-nome {
             font-family: 'Montserrat', sans-serif;
             font-size: 15px;
             font-weight: 800;
@@ -347,24 +336,22 @@
             background: #f0f4f8;
             padding: 10px 18px;
             border-radius: 10px;
-            border-left: 4px solid #CC0000;
             margin-bottom: 10px;
             width: 100%;
             text-align: left;
         }
 
-        .cancel-data {
+        .bloqueio-data {
             font-size: 11.5px;
             color: #aaa;
             font-weight: 500;
             margin-bottom: 26px;
         }
 
-        .cancel-badge {
+        .bloqueio-badge {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            background: #CC0000;
             color: white;
             padding: 9px 22px;
             border-radius: 50px;
@@ -372,6 +359,40 @@
             font-weight: 700;
             letter-spacing: 0.8px;
             text-transform: uppercase;
+        }
+
+        /* ── CANCELADA — vermelho ── */
+        #tela-cancelada .bloqueio-icone {
+            background: #fff0f0;
+            border-color: #CC0000;
+            animation: pulseRed 1.8s ease-in-out infinite;
+        }
+
+        #tela-cancelada .bloqueio-titulo  { color: #CC0000; }
+        #tela-cancelada .bloqueio-divider { background: #CC0000; }
+        #tela-cancelada .bloqueio-nome    { border-left: 4px solid #CC0000; }
+        #tela-cancelada .bloqueio-badge   { background: #CC0000; }
+
+        @keyframes pulseRed {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.3); }
+            50%       { box-shadow: 0 0 0 16px rgba(204,0,0,0); }
+        }
+
+        /* ── VENCIDA — laranja ── */
+        #tela-vencida .bloqueio-icone {
+            background: #fff7f0;
+            border-color: #E07000;
+            animation: pulseOrange 1.8s ease-in-out infinite;
+        }
+
+        #tela-vencida .bloqueio-titulo  { color: #E07000; }
+        #tela-vencida .bloqueio-divider { background: #E07000; }
+        #tela-vencida .bloqueio-nome    { border-left: 4px solid #E07000; }
+        #tela-vencida .bloqueio-badge   { background: #E07000; }
+
+        @keyframes pulseOrange {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(224,112,0,0.3); }
+            50%       { box-shadow: 0 0 0 16px rgba(224,112,0,0); }
         }
 
         /* ── FOOTER ── */
@@ -391,31 +412,53 @@
 <body>
     <div class="carteirinha">
 
-        <!-- ══ TELA DE CANCELAMENTO ══ -->
-        <div id="tela-cancelada">
-            <div class="cancel-icone">
+        <!-- ══ TELA CANCELADA (vermelha) ══ -->
+        <div id="tela-cancelada" class="tela-bloqueio">
+            <div class="bloqueio-icone">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#CC0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="15" y1="9" x2="9" y2="15"/>
                     <line x1="9" y1="9" x2="15" y2="15"/>
                 </svg>
             </div>
-
-            <div class="cancel-titulo">Carteirinha Cancelada</div>
-            <div class="cancel-divider"></div>
-
-            <div class="cancel-subtitulo">
+            <div class="bloqueio-titulo">Carteirinha Cancelada</div>
+            <div class="bloqueio-divider"></div>
+            <div class="bloqueio-subtitulo">
                 Este funcionário não está mais vinculado ao Atlântico Shopping.<br>O acesso foi revogado.
             </div>
-
-            <div class="cancel-nome" id="cancel-nome-exibido">—</div>
-            <div class="cancel-data" id="cancel-data-exibida"></div>
-
-            <div class="cancel-badge">
+            <div class="bloqueio-nome" id="cancel-nome">—</div>
+            <div class="bloqueio-data" id="cancel-data"></div>
+            <div class="bloqueio-badge">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 6L6 18M6 6l12 12"/>
                 </svg>
                 Acesso Negado
+            </div>
+        </div>
+
+        <!-- ══ TELA VENCIDA (laranja) ══ -->
+        <div id="tela-vencida" class="tela-bloqueio">
+            <div class="bloqueio-icone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#E07000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <div class="bloqueio-titulo">Carteirinha Vencida</div>
+            <div class="bloqueio-divider"></div>
+            <div class="bloqueio-subtitulo">
+                O prazo de validade desta carteirinha expirou.<br>Entre em contato com a administração para renovação.
+            </div>
+            <div class="bloqueio-nome" id="vencida-nome">—</div>
+            <div class="bloqueio-data" id="vencida-data"></div>
+            <div class="bloqueio-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                Prazo Expirado
             </div>
         </div>
 
@@ -484,6 +527,27 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
+        // Converte "DD/MM/YYYY" para objeto Date zerado na meia-noite
+        function parseDateBR(str) {
+            if (!str || str.trim() === '') return null;
+            var partes = str.trim().split('/');
+            if (partes.length !== 3) return null;
+            var d = parseInt(partes[0], 10);
+            var m = parseInt(partes[1], 10) - 1;
+            var y = parseInt(partes[2], 10);
+            var dt = new Date(y, m, d);
+            return isNaN(dt.getTime()) ? null : dt;
+        }
+
+        // Retorna true se a data já passou (comparando só o dia, sem hora)
+        function isVencida(dataStr) {
+            var dt = parseDateBR(dataStr);
+            if (!dt) return false;
+            var hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            return dt < hoje;
+        }
+
         function processarUrlFoto(fotoParam) {
             if (!fotoParam || fotoParam.trim() === '') return null;
             var url = fotoParam.trim();
@@ -536,26 +600,30 @@
             var foto     = getParam('foto');
             var validade = getParam('validade');
             var emissao  = getParam('emissao');
-            var status   = getParam('status').trim(); // ← SEM .toLowerCase()
+            var status   = getParam('status').trim();
 
             // ══════════════════════════════════════════
-            //  CANCELAMENTO — detecta &status=Cancelada
+            //  1. CANCELADA — status=Cancelada
             // ══════════════════════════════════════════
             if (status === 'Cancelada') {
-                var tela = document.getElementById('tela-cancelada');
-                tela.classList.add('ativo');
-
-                if (nome) {
-                    document.getElementById('cancel-nome-exibido').textContent = nome.toUpperCase();
-                }
-                if (emissao) {
-                    document.getElementById('cancel-data-exibida').textContent = 'Carteirinha emitida em ' + emissao;
-                }
-                return; // Encerra aqui — não renderiza nada mais
+                document.getElementById('tela-cancelada').classList.add('ativo');
+                if (nome)   document.getElementById('cancel-nome').textContent = nome.toUpperCase();
+                if (emissao) document.getElementById('cancel-data').textContent = 'Carteirinha emitida em ' + emissao;
+                return;
             }
 
             // ══════════════════════════════════════════
-            //  CARTEIRINHA ATIVA — fluxo normal
+            //  2. VENCIDA — validade preenchida e expirada
+            // ══════════════════════════════════════════
+            if (validade && validade.trim() !== '' && isVencida(validade)) {
+                document.getElementById('tela-vencida').classList.add('ativo');
+                if (nome)     document.getElementById('vencida-nome').textContent = nome.toUpperCase();
+                if (validade) document.getElementById('vencida-data').textContent = 'Vencida em ' + validade;
+                return;
+            }
+
+            // ══════════════════════════════════════════
+            //  3. CARTEIRINHA ATIVA — fluxo normal
             // ══════════════════════════════════════════
             if (nome)   document.getElementById('nome').textContent = nome.toUpperCase();
             if (loja)   document.getElementById('loja').textContent = loja;
@@ -584,6 +652,7 @@
                 this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlAtual);
             };
 
+            // Exibe barra de validade apenas se tiver data (temporária)
             if (validade && validade.trim() !== '') {
                 var bar = document.getElementById('validade-bar');
                 bar.style.display = 'block';
