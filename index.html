@@ -204,12 +204,12 @@
             font-weight: 500;
         }
 
-        /* ── VALIDADE ── */
+        /* ── VALIDADE — temporária ainda válida ── */
         .validade-bar {
             display: none;
             margin: 18px 22px 0;
-            background: linear-gradient(135deg, #fff0f0 0%, #ffe4e4 100%);
-            border: 2px solid #CC0000;
+            background: linear-gradient(135deg, #f0fff6 0%, #dcffe8 100%);
+            border: 2px solid #00a050;
             border-radius: 14px;
             padding: 14px 18px;
             position: relative;
@@ -222,7 +222,7 @@
             position: absolute;
             left: 0; top: 0; bottom: 0;
             width: 5px;
-            background: #CC0000;
+            background: #00a050;
         }
 
         .validade-inner {
@@ -235,7 +235,7 @@
 
         .validade-titulo {
             font-size: 10px;
-            color: #CC0000;
+            color: #00a050;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             font-weight: 700;
@@ -246,14 +246,14 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 22px;
             font-weight: 900;
-            color: #CC0000;
+            color: #00a050;
             letter-spacing: 0.5px;
             line-height: 1;
         }
 
         .emissao-info {
             font-size: 10px;
-            color: #e06060;
+            color: #50b080;
             margin-top: 5px;
             font-weight: 500;
         }
@@ -265,7 +265,7 @@
         }
 
         /* ══════════════════════════════════
-           TELAS DE BLOQUEIO (base comum)
+           TELAS DE BLOQUEIO
         ══════════════════════════════════ */
         .tela-bloqueio {
             display: none;
@@ -281,9 +281,7 @@
             border-radius: 24px;
         }
 
-        .tela-bloqueio.ativo {
-            display: flex;
-        }
+        .tela-bloqueio.ativo { display: flex; }
 
         .bloqueio-icone {
             width: 90px;
@@ -296,10 +294,7 @@
             border: 3px solid;
         }
 
-        .bloqueio-icone svg {
-            width: 46px;
-            height: 46px;
-        }
+        .bloqueio-icone svg { width: 46px; height: 46px; }
 
         .bloqueio-titulo {
             font-family: 'Montserrat', sans-serif;
@@ -311,8 +306,7 @@
         }
 
         .bloqueio-divider {
-            width: 50px;
-            height: 3px;
+            width: 50px; height: 3px;
             border-radius: 2px;
             margin: 0 auto 18px;
             opacity: 0.35;
@@ -361,13 +355,12 @@
             text-transform: uppercase;
         }
 
-        /* ── CANCELADA — vermelho ── */
+        /* CANCELADA — vermelho */
         #tela-cancelada .bloqueio-icone {
             background: #fff0f0;
             border-color: #CC0000;
             animation: pulseRed 1.8s ease-in-out infinite;
         }
-
         #tela-cancelada .bloqueio-titulo  { color: #CC0000; }
         #tela-cancelada .bloqueio-divider { background: #CC0000; }
         #tela-cancelada .bloqueio-nome    { border-left: 4px solid #CC0000; }
@@ -378,13 +371,12 @@
             50%       { box-shadow: 0 0 0 16px rgba(204,0,0,0); }
         }
 
-        /* ── VENCIDA — laranja ── */
+        /* VENCIDA — laranja */
         #tela-vencida .bloqueio-icone {
             background: #fff7f0;
             border-color: #E07000;
             animation: pulseOrange 1.8s ease-in-out infinite;
         }
-
         #tela-vencida .bloqueio-titulo  { color: #E07000; }
         #tela-vencida .bloqueio-divider { background: #E07000; }
         #tela-vencida .bloqueio-nome    { border-left: 4px solid #E07000; }
@@ -503,11 +495,11 @@
                 <div class="qr-instruction">Apresente este código ao segurança</div>
             </div>
 
-            <!-- VALIDADE -->
+            <!-- VALIDADE (verde = ainda válida) -->
             <div class="validade-bar" id="validade-bar">
                 <div class="validade-inner">
                     <div class="validade-texto">
-                        <div class="validade-titulo">⚠️ Válida até</div>
+                        <div class="validade-titulo">✅ Válida até</div>
                         <div class="validade-data" id="validade-data">—</div>
                         <div class="emissao-info" id="emissao-info"></div>
                     </div>
@@ -527,34 +519,28 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // Converte "DD/MM/YYYY" para objeto Date zerado na meia-noite
+        // Converte "DD/MM/YYYY" para Date zerado na meia-noite
         function parseDateBR(str) {
             if (!str || str.trim() === '') return null;
-            var partes = str.trim().split('/');
-            if (partes.length !== 3) return null;
-            var d = parseInt(partes[0], 10);
-            var m = parseInt(partes[1], 10) - 1;
-            var y = parseInt(partes[2], 10);
-            var dt = new Date(y, m, d);
+            var p = str.trim().split('/');
+            if (p.length !== 3) return null;
+            var dt = new Date(parseInt(p[2],10), parseInt(p[1],10)-1, parseInt(p[0],10));
             return isNaN(dt.getTime()) ? null : dt;
         }
 
-        // Retorna true se a data já passou (comparando só o dia, sem hora)
+        // Retorna true se a data já passou (comparando só o dia)
         function isVencida(dataStr) {
             var dt = parseDateBR(dataStr);
             if (!dt) return false;
             var hoje = new Date();
-            hoje.setHours(0, 0, 0, 0);
+            hoje.setHours(0,0,0,0);
             return dt < hoje;
         }
 
         function processarUrlFoto(fotoParam) {
             if (!fotoParam || fotoParam.trim() === '') return null;
             var url = fotoParam.trim();
-            try {
-                var obj = JSON.parse(url);
-                if (obj.Url) url = obj.Url.trim();
-            } catch(e) {}
+            try { var obj = JSON.parse(url); if (obj.Url) url = obj.Url.trim(); } catch(e) {}
             if (url.includes('drive.google.com/uc') && url.includes('export=view')) {
                 var id = url.match(/id=([^&]+)/);
                 if (id) return montarUrlsAlternativas(id[1]);
@@ -603,7 +589,7 @@
             var status   = getParam('status').trim();
 
             // ══════════════════════════════════════════
-            //  1. CANCELADA — status=Cancelada
+            //  1. CANCELADA
             // ══════════════════════════════════════════
             if (status === 'Cancelada') {
                 document.getElementById('tela-cancelada').classList.add('ativo');
@@ -623,7 +609,7 @@
             }
 
             // ══════════════════════════════════════════
-            //  3. CARTEIRINHA ATIVA — fluxo normal
+            //  3. ATIVA — fluxo normal
             // ══════════════════════════════════════════
             if (nome)   document.getElementById('nome').textContent = nome.toUpperCase();
             if (loja)   document.getElementById('loja').textContent = loja;
@@ -652,10 +638,9 @@
                 this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlAtual);
             };
 
-            // Exibe barra de validade apenas se tiver data (temporária)
+            // Barra verde — só exibe se tiver validade e ainda não venceu
             if (validade && validade.trim() !== '') {
-                var bar = document.getElementById('validade-bar');
-                bar.style.display = 'block';
+                document.getElementById('validade-bar').style.display = 'block';
                 document.getElementById('validade-data').textContent = validade;
                 if (emissao && emissao.trim() !== '') {
                     document.getElementById('emissao-info').textContent = 'Emitida em ' + emissao;
