@@ -758,7 +758,7 @@
             }
         }
         
-        function exibirCarteirinha(dados) {
+        function exibirCarteirinha(dados, id) {
             const emissao = formatarData(dados.dataEmissao);
             const validade = formatarData(dados.dataValidade);
             const status = dados.status.trim();
@@ -815,12 +815,16 @@
             const urls = processarUrlFoto(dados.foto);
             if (urls && urls.length > 0) tentarCarregarFoto(urls, 0);
             
-            // QR Code - usa sempre a URL atual da página
-            const urlParaQR = window.location.href;
+            // QR Code - reconstrói a URL manualmente para garantir que está limpa
+            const baseUrl = 'https://suporteoperacional-atl.github.io/carteirinha-digital/';
+            const urlLimpa = baseUrl + '?id=' + id;
+            
+            console.log('🔗 URL do QR Code:', urlLimpa);
+            
             const qr = document.getElementById('qrcode');
-            qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlParaQR) + '&size=400';
+            qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlLimpa) + '&size=400';
             qr.onerror = function() {
-                this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlParaQR);
+                this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlLimpa);
             };
             
             // BARRA VERDE DE VALIDADE
@@ -860,7 +864,7 @@
                 }
                 
                 console.log('📦 Dados:', dados);
-                exibirCarteirinha(dados);
+                exibirCarteirinha(dados, id);
                 
             } catch (error) {
                 console.error('💥 Erro:', error);
