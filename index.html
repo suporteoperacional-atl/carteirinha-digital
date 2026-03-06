@@ -627,16 +627,30 @@
             const prazo = prazoTexto.toLowerCase().trim();
             let dataValidade = new Date(dataEmissao);
             
-            if (prazo.includes('1 ano') || prazo.includes('um ano')) {
+            // Dias
+            if (prazo.includes('15 dias')) {
+                dataValidade.setDate(dataValidade.getDate() + 15);
+            } else if (prazo.includes('30 dias')) {
+                dataValidade.setDate(dataValidade.getDate() + 30);
+            } else if (prazo.includes('60 dias')) {
+                dataValidade.setDate(dataValidade.getDate() + 60);
+            } else if (prazo.includes('90 dias')) {
+                dataValidade.setDate(dataValidade.getDate() + 90);
+            }
+            // Anos
+            else if (prazo.includes('1 ano') || prazo.includes('um ano')) {
                 dataValidade.setFullYear(dataValidade.getFullYear() + 1);
-            } else if (prazo.includes('6 meses') || prazo.includes('seis meses')) {
-                dataValidade.setMonth(dataValidade.getMonth() + 6);
-            } else if (prazo.includes('3 meses') || prazo.includes('três meses')) {
-                dataValidade.setMonth(dataValidade.getMonth() + 3);
             } else if (prazo.includes('2 anos') || prazo.includes('dois anos')) {
                 dataValidade.setFullYear(dataValidade.getFullYear() + 2);
-            } else {
-                // Default: 1 ano
+            }
+            // Meses
+            else if (prazo.includes('3 meses') || prazo.includes('três meses')) {
+                dataValidade.setMonth(dataValidade.getMonth() + 3);
+            } else if (prazo.includes('6 meses') || prazo.includes('seis meses')) {
+                dataValidade.setMonth(dataValidade.getMonth() + 6);
+            }
+            // Default: 1 ano
+            else {
                 dataValidade.setFullYear(dataValidade.getFullYear() + 1);
             }
             
