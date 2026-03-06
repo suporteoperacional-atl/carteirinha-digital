@@ -793,13 +793,17 @@
             const labelDoc = document.getElementById('label-doc');
             const valDoc = document.getElementById('val-doc');
             
-            if (dados.rg && dados.rg.trim() !== '') {
+            // Converte RG e CPF para string se necessário
+            const rg = dados.rg ? String(dados.rg).trim() : '';
+            const cpf = dados.cpf ? String(dados.cpf).trim() : '';
+            
+            if (rg && rg !== '') {
                 labelDoc.textContent = 'Documento (RG)';
-                valDoc.textContent = dados.rg;
+                valDoc.textContent = rg;
                 rowDoc.style.display = 'block';
-            } else if (dados.cpf && dados.cpf.trim() !== '') {
+            } else if (cpf && cpf !== '') {
                 labelDoc.textContent = 'CPF';
-                valDoc.textContent = dados.cpf;
+                valDoc.textContent = cpf;
                 rowDoc.style.display = 'block';
             }
             
