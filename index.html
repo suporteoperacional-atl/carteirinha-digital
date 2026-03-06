@@ -737,6 +737,13 @@
                         console.log('🔍 DEBUG Data Emissão RAW:', row[COL_DATA_EMISSAO]);
                         console.log('🔍 DEBUG Data Validade RAW:', row[COL_DATA_VALIDADE]);
                         
+                        // Extrai valores das datas (podem vir como objeto com .v ou .f)
+                        const dataEmissaoVal = row[COL_DATA_EMISSAO]?.f || row[COL_DATA_EMISSAO]?.v || '';
+                        const dataValidadeVal = row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || '';
+                        
+                        console.log('📅 DEBUG Emissão extraída:', dataEmissaoVal);
+                        console.log('📅 DEBUG Validade extraída:', dataValidadeVal);
+                        
                         return {
                             nome: row[COL_NOME]?.v || '',
                             loja: row[COL_LOJA]?.v || '',
@@ -745,8 +752,8 @@
                             foto: row[COL_FOTO]?.v || '',
                             status: row[COL_STATUS]?.v || '',
                             funcao: row[COL_FUNCAO]?.v || 'Funcionário',
-                            dataEmissao: row[COL_DATA_EMISSAO]?.v || '',
-                            dataValidade: row[COL_DATA_VALIDADE]?.v || ''
+                            dataEmissao: dataEmissaoVal,
+                            dataValidade: dataValidadeVal
                         };
                     }
                 }
