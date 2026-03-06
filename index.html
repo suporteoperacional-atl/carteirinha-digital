@@ -815,11 +815,12 @@
             const urls = processarUrlFoto(dados.foto);
             if (urls && urls.length > 0) tentarCarregarFoto(urls, 0);
             
-            const urlAtual = window.location.href;
+            // QR Code - usa sempre a URL atual da página
+            const urlParaQR = window.location.href;
             const qr = document.getElementById('qrcode');
-            qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlAtual) + '&size=400';
+            qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlParaQR) + '&size=400';
             qr.onerror = function() {
-                this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlAtual);
+                this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlParaQR);
             };
             
             // BARRA VERDE DE VALIDADE
