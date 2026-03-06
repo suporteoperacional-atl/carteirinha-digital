@@ -732,6 +732,11 @@
                     
                     if (rowId === id) {
                         console.log('✅ Funcionário encontrado!');
+                        
+                        // DEBUG: Ver valores brutos das datas
+                        console.log('🔍 DEBUG Data Emissão RAW:', row[COL_DATA_EMISSAO]);
+                        console.log('🔍 DEBUG Data Validade RAW:', row[COL_DATA_VALIDADE]);
+                        
                         return {
                             nome: row[COL_NOME]?.v || '',
                             loja: row[COL_LOJA]?.v || '',
