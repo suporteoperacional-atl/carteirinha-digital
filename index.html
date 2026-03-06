@@ -572,8 +572,7 @@
         const SHEET_NAME = 'Carteirinhas para imprimir';
         const RANGE = 'A:O';
         
-        // MAPEAMENTO DAS COLUNAS (baseado na sua estrutura)
-        // A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9, K=10, L=11, M=12, N=13, O=14
+        // MAPEAMENTO DAS COLUNAS
         const COL_ID = 13;              // Coluna N - ID
         const COL_NOME = 4;             // Coluna E - Nome completo funcionário
         const COL_LOJA = 2;             // Coluna C - Nome da LOJA
@@ -582,7 +581,7 @@
         const COL_FOTO = 8;             // Coluna I - Insira uma Foto...
         const COL_STATUS = 6;           // Coluna G - Status
         const COL_FUNCAO = 10;          // Coluna K - Função
-        const COL_DATA_VALIDADE = 12;   // Coluna M - Prazo de Validade
+        const COL_PRAZO_VALIDADE = 12;  // Coluna M - Prazo de Validade (texto: "1 Ano", "6 Meses", etc)
         const COL_DATA_EMISSAO = 14;    // Coluna O - Data de Emissão
         
         // ============================================
@@ -607,6 +606,41 @@
             const data = new Date(valor);
             if (isNaN(data.getTime())) return '';
             return data.toLocaleDateString('pt-BR');
+        }
+        
+        // Calcula data de validade baseada em emissão + prazo
+        function calcularDataValidade(dataEmissaoStr, prazoTexto) {
+            if (!dataEmissaoStr || !prazoTexto) return '';
+            
+            // Parse da data de emissão (formato: DD/MM/AAAA ou objeto Date)
+            let dataEmissao;
+            if (typeof dataEmissaoStr === 'string' && dataEmissaoStr.includes('/')) {
+                const partes = dataEmissaoStr.split('/');
+                dataEmissao = new Date(partes[2], partes[1] - 1, partes[0]);
+            } else {
+                dataEmissao = new Date(dataEmissaoStr);
+            }
+            
+            if (isNaN(dataEmissao.getTime())) return '';
+            
+            // Interpreta o prazo
+            const prazo = prazoTexto.toLowerCase().trim();
+            let dataValidade = new Date(dataEmissao);
+            
+            if (prazo.includes('1 ano') || prazo.includes('um ano')) {
+                dataValidade.setFullYear(dataValidade.getFullYear() + 1);
+            } else if (prazo.includes('6 meses') || prazo.includes('seis meses')) {
+                dataValidade.setMonth(dataValidade.getMonth() + 6);
+            } else if (prazo.includes('3 meses') || prazo.includes('três meses')) {
+                dataValidade.setMonth(dataValidade.getMonth() + 3);
+            } else if (prazo.includes('2 anos') || prazo.includes('dois anos')) {
+                dataValidade.setFullYear(dataValidade.getFullYear() + 2);
+            } else {
+                // Default: 1 ano
+                dataValidade.setFullYear(dataValidade.getFullYear() + 1);
+            }
+            
+            return dataValidade.toLocaleDateString('pt-BR');
         }
         
         function parseDateBR(str) {
@@ -692,7 +726,7 @@
                             foto: row[COL_FOTO]?.v || '',
                             status: row[COL_STATUS]?.v || '',
                             funcao: row[COL_FUNCAO]?.v || 'Funcionário',
-                            dataValidade: row[COL_DATA_VALIDADE]?.v || '',
+                            prazoValidade: row[COL_PRAZO_VALIDADE]?.v || '',
                             dataEmissao: row[COL_DATA_EMISSAO]?.v || ''
                         };
                     }
@@ -706,12 +740,14 @@
         }
         
         function exibirCarteirinha(dados) {
-            const validade = formatarData(dados.dataValidade);
             const emissao = formatarData(dados.dataEmissao);
+            const validade = calcularDataValidade(dados.dataEmissao, dados.prazoValidade);
             const status = dados.status.trim();
             
             console.log('📋 Status:', status);
-            console.log('📅 Validade:', validade);
+            console.log('📅 Emissão:', emissao);
+            console.log('⏰ Prazo:', dados.prazoValidade);
+            console.log('📅 Validade calculada:', validade);
             
             // CANCELADA/ARQUIVADA/INVÁLIDA
             if (status === 'Cancelada' || status === 'Arquivada' || status === 'Inválida') {
@@ -764,6 +800,7 @@
                 this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlAtual);
             };
             
+            // BARRA VERDE DE VALIDADE
             if (validade && validade.trim() !== '') {
                 document.getElementById('validade-bar').style.display = 'block';
                 document.getElementById('validade-data').textContent = validade;
