@@ -570,7 +570,7 @@
         // ============================================
         const SHEET_ID = '1BGAp5Kix1FewHezF1A-9yTiaO1sX83y62Yd7npoxNzI';
         const SHEET_NAME = 'Carteirinhas para imprimir';
-        const RANGE = 'A:O';
+        const RANGE = 'A:Q';  // Inclui até coluna Q
         
         // MAPEAMENTO DAS COLUNAS
         const COL_ID = 13;              // Coluna N - ID
@@ -581,8 +581,8 @@
         const COL_FOTO = 8;             // Coluna I - Insira uma Foto...
         const COL_STATUS = 6;           // Coluna G - Status
         const COL_FUNCAO = 10;          // Coluna K - Função
-        const COL_PRAZO_VALIDADE = 12;  // Coluna M - Prazo de Validade (texto: "1 Ano", "6 Meses", etc)
-        const COL_DATA_EMISSAO = 14;    // Coluna O - Data de Emissão
+        const COL_DATA_EMISSAO = 15;    // Coluna P - Data_Emissao_Real
+        const COL_DATA_VALIDADE = 16;   // Coluna Q - Data_Validade_Real
         
         // ============================================
         // FUNÇÕES
@@ -740,8 +740,8 @@
                             foto: row[COL_FOTO]?.v || '',
                             status: row[COL_STATUS]?.v || '',
                             funcao: row[COL_FUNCAO]?.v || 'Funcionário',
-                            prazoValidade: row[COL_PRAZO_VALIDADE]?.v || '',
-                            dataEmissao: row[COL_DATA_EMISSAO]?.v || ''
+                            dataEmissao: row[COL_DATA_EMISSAO]?.v || '',
+                            dataValidade: row[COL_DATA_VALIDADE]?.v || ''
                         };
                     }
                 }
@@ -755,13 +755,12 @@
         
         function exibirCarteirinha(dados) {
             const emissao = formatarData(dados.dataEmissao);
-            const validade = calcularDataValidade(dados.dataEmissao, dados.prazoValidade);
+            const validade = formatarData(dados.dataValidade);
             const status = dados.status.trim();
             
             console.log('📋 Status:', status);
             console.log('📅 Emissão:', emissao);
-            console.log('⏰ Prazo:', dados.prazoValidade);
-            console.log('📅 Validade calculada:', validade);
+            console.log('📅 Validade:', validade);
             
             // CANCELADA/ARQUIVADA/INVÁLIDA
             if (status === 'Cancelada' || status === 'Arquivada' || status === 'Inválida') {
