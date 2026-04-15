@@ -29,7 +29,6 @@
             pointer-events: none;
         }
 
-        /* LOADING */
         .loading {
             background: white;
             padding: 40px;
@@ -43,408 +42,199 @@
             border: 4px solid #f3f3f3;
             border-top: 4px solid #2c5f8d;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 
-        /* ERRO */
         .erro {
-            background: white;
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-            display: none;
-            animation: fadeUp 0.5s ease both;
+            background: white; padding: 40px; border-radius: 24px;
+            text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            display: none; animation: fadeUp 0.5s ease both;
         }
         .erro h1 { color: #dc3545; margin-bottom: 20px; font-family: 'Montserrat', sans-serif; }
-        .erro p { color: #666; font-size: 16px; }
+        .erro p  { color: #666; font-size: 16px; }
 
         .carteirinha {
-            background: #ffffff;
-            width: 360px;
-            border-radius: 24px;
-            overflow: hidden;
+            background: #ffffff; width: 360px; border-radius: 24px; overflow: hidden;
             box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
-            position: relative;
-            z-index: 10;
-            animation: fadeUp 0.5s ease both;
-            display: none;
+            position: relative; z-index: 10;
+            animation: fadeUp 0.5s ease both; display: none;
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from { opacity:0; transform:translateY(20px); }
+            to   { opacity:1; transform:translateY(0); }
         }
 
         .carteirinha::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
             background-image: url('logo_branco.png');
-            background-position: center 40%;
-            background-size: 180px;
-            background-repeat: no-repeat;
-            opacity: 0.04;
-            pointer-events: none;
-            z-index: 1;
+            background-position: center 40%; background-size: 180px;
+            background-repeat: no-repeat; opacity: 0.04;
+            pointer-events: none; z-index: 1;
         }
 
-        /* ── HEADER ── */
         .header {
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
-            padding: 0 20px;
-            height: 110px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            position: relative;
-            z-index: 5;
+            padding: 0 20px; height: 110px;
+            display: flex; align-items: center; justify-content: flex-start;
+            position: relative; z-index: 5;
         }
-
         .header::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0; right: 0;
-            height: 12px;
+            content: ''; position: absolute; bottom:-12px; left:0; right:0; height:12px;
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
             clip-path: ellipse(55% 100% at 50% 0%);
         }
-
         .logo-header {
-            height: 83px;
-            width: auto;
-            object-fit: contain;
-            object-position: left center;
-            display: block;
+            height: 83px; width: auto; object-fit: contain;
+            object-position: left center; display: block;
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
         }
 
-        /* ── FOTO ── */
         .foto-wrap {
-            display: flex;
-            justify-content: center;
-            margin-top: 24px;
-            position: relative;
-            z-index: 5;
+            display: flex; justify-content: center;
+            margin-top: 24px; position: relative; z-index: 5;
         }
-
         .foto {
-            width: 160px;
-            height: 195px;
-            border-radius: 14px;
-            border: 4px solid #2c5f8d;
-            overflow: hidden;
+            width: 160px; height: 195px; border-radius: 14px;
+            border: 4px solid #2c5f8d; overflow: hidden;
             box-shadow: 0 8px 24px rgba(0,0,0,0.22);
-            background: #f0f4f8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #f0f4f8; display: flex;
+            align-items: center; justify-content: center;
         }
+        .foto img { width:100%; height:100%; object-fit:cover; object-position:center top; display:none; }
+        .foto-placeholder { text-align:center; color:#aab5c3; font-size:13px; line-height:1.6; }
 
-        .foto img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
-            display: none;
-        }
-
-        .foto-placeholder {
-            text-align: center;
-            color: #aab5c3;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        /* ── INFO ── */
-        .info {
-            padding: 20px 22px 0;
-            position: relative;
-            z-index: 5;
-        }
-
+        .info { padding: 20px 22px 0; position: relative; z-index: 5; }
         .nome {
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 19px;
-            font-weight: 900;
-            color: #1e3a5f;
-            margin-bottom: 18px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.25;
+            text-align: center; font-family: 'Montserrat', sans-serif;
+            font-size: 19px; font-weight: 900; color: #1e3a5f;
+            margin-bottom: 18px; text-transform: uppercase;
+            letter-spacing: 0.5px; line-height: 1.25;
         }
-
         .row { margin-bottom: 12px; }
-
         .label {
-            font-size: 10px;
-            color: #8a96a8;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-            margin-bottom: 3px;
+            font-size: 10px; color: #8a96a8; text-transform: uppercase;
+            letter-spacing: 0.8px; font-weight: 600; margin-bottom: 3px;
         }
-
         .value {
-            font-size: 15px;
-            color: #1e3a5f;
-            font-weight: 600;
-            background: #f0f7ff;
-            padding: 9px 14px;
-            border-radius: 10px;
-            border-left: 4px solid #2c5f8d;
+            font-size: 15px; color: #1e3a5f; font-weight: 600;
+            background: #f0f7ff; padding: 9px 14px;
+            border-radius: 10px; border-left: 4px solid #2c5f8d;
         }
 
-        /* ── QR ── */
         .qr-section {
-            margin: 18px 22px 0;
-            padding: 16px;
+            margin: 18px 22px 0; padding: 16px;
             background: linear-gradient(135deg, #f8f9fb 0%, #eef2f7 100%);
-            border-radius: 14px;
-            text-align: center;
+            border-radius: 14px; text-align: center;
         }
-
         .qr-label {
-            font-size: 11px;
-            color: #8a96a8;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-size: 11px; color: #8a96a8; text-transform: uppercase;
+            letter-spacing: 0.8px; font-weight: 600; margin-bottom: 10px;
         }
-
         .qr-code {
-            width: 130px;
-            height: 130px;
-            background: white;
-            padding: 7px;
-            border-radius: 12px;
-            border: 3px solid #2c5f8d;
-            margin: 0 auto;
+            width: 130px; height: 130px; background: white; padding: 7px;
+            border-radius: 12px; border: 3px solid #2c5f8d; margin: 0 auto;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
+        .qr-code img { width:100%; height:100%; }
+        .qr-instruction { font-size:12px; color:#5a7a99; margin-top:10px; font-weight:500; }
 
-        .qr-code img { width: 100%; height: 100%; }
-
-        .qr-instruction {
-            font-size: 12px;
-            color: #5a7a99;
-            margin-top: 10px;
-            font-weight: 500;
-        }
-
-        /* ── VALIDADE ── */
         .validade-bar {
-            display: none;
-            margin: 18px 22px 0;
+            display: none; margin: 18px 22px 0;
             background: linear-gradient(135deg, #f0fff6 0%, #dcffe8 100%);
-            border: 2px solid #00a050;
-            border-radius: 14px;
-            padding: 14px 18px;
-            position: relative;
-            z-index: 5;
-            overflow: hidden;
+            border: 2px solid #00a050; border-radius: 14px;
+            padding: 14px 18px; position: relative; z-index: 5; overflow: hidden;
         }
-
         .validade-bar::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 5px;
-            background: #00a050;
+            content: ''; position: absolute; left:0; top:0; bottom:0;
+            width: 5px; background: #00a050;
         }
-
-        .validade-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
+        .validade-inner { display:flex; align-items:center; justify-content:space-between; }
         .validade-texto { flex: 1; }
-
         .validade-titulo {
-            font-size: 10px;
-            color: #00a050;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 700;
-            margin-bottom: 3px;
+            font-size: 10px; color: #00a050; text-transform: uppercase;
+            letter-spacing: 0.8px; font-weight: 700; margin-bottom: 3px;
         }
-
         .validade-data {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            color: #00a050;
-            letter-spacing: 0.5px;
-            line-height: 1;
+            font-family: 'Montserrat', sans-serif; font-size: 22px;
+            font-weight: 900; color: #00a050; letter-spacing: 0.5px; line-height: 1;
         }
+        .emissao-info { font-size:10px; color:#50b080; margin-top:5px; font-weight:500; }
+        .validade-icone { font-size:28px; margin-left:12px; opacity:0.85; }
 
-        .emissao-info {
-            font-size: 10px;
-            color: #50b080;
-            margin-top: 5px;
-            font-weight: 500;
-        }
-
-        .validade-icone {
-            font-size: 28px;
-            margin-left: 12px;
-            opacity: 0.85;
-        }
-
-        /* ══ TELAS DE BLOQUEIO ══ */
         .tela-bloqueio {
-            display: none;
-            position: absolute;
-            inset: 0;
-            z-index: 100;
-            background: rgba(255,255,255,0.98);
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 24px;
-            text-align: center;
-            border-radius: 24px;
+            display: none; position: absolute; inset: 0; z-index: 100;
+            background: rgba(255,255,255,0.98); flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 32px 24px; text-align: center; border-radius: 24px;
         }
-
         .tela-bloqueio.ativo { display: flex; }
-
         .bloqueio-icone {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            border: 3px solid;
+            width:90px; height:90px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            margin-bottom:20px; border:3px solid;
         }
-
-        .bloqueio-icone svg { width: 46px; height: 46px; }
-
+        .bloqueio-icone svg { width:46px; height:46px; }
         .bloqueio-titulo {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
+            font-family:'Montserrat',sans-serif; font-size:22px; font-weight:900;
+            text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;
         }
-
-        .bloqueio-divider {
-            width: 50px; height: 3px;
-            border-radius: 2px;
-            margin: 0 auto 18px;
-            opacity: 0.35;
-        }
-
+        .bloqueio-divider { width:50px; height:3px; border-radius:2px; margin:0 auto 18px; opacity:0.35; }
         .bloqueio-subtitulo {
-            font-size: 13.5px;
-            color: #666;
-            font-weight: 500;
-            line-height: 1.65;
-            margin-bottom: 22px;
-            max-width: 260px;
+            font-size:13.5px; color:#666; font-weight:500;
+            line-height:1.65; margin-bottom:22px; max-width:260px;
         }
-
         .bloqueio-nome {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 15px;
-            font-weight: 800;
-            color: #1e3a5f;
-            text-transform: uppercase;
-            background: #f0f4f8;
-            padding: 10px 18px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-            text-align: left;
+            font-family:'Montserrat',sans-serif; font-size:15px; font-weight:800;
+            color:#1e3a5f; text-transform:uppercase; background:#f0f4f8;
+            padding:10px 18px; border-radius:10px; margin-bottom:10px;
+            width:100%; text-align:left;
         }
-
-        .bloqueio-data {
-            font-size: 11.5px;
-            color: #aaa;
-            font-weight: 500;
-            margin-bottom: 26px;
-        }
-
+        .bloqueio-data { font-size:11.5px; color:#aaa; font-weight:500; margin-bottom:26px; }
         .bloqueio-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            color: white;
-            padding: 9px 22px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
+            display:inline-flex; align-items:center; gap:7px; color:white;
+            padding:9px 22px; border-radius:50px; font-size:12px;
+            font-weight:700; letter-spacing:0.8px; text-transform:uppercase;
         }
 
-        /* CANCELADA — vermelho */
-        #tela-cancelada .bloqueio-icone {
-            background: #fff0f0;
-            border-color: #CC0000;
-            animation: pulseRed 1.8s ease-in-out infinite;
-        }
-        #tela-cancelada .bloqueio-titulo  { color: #CC0000; }
-        #tela-cancelada .bloqueio-divider { background: #CC0000; }
-        #tela-cancelada .bloqueio-nome    { border-left: 4px solid #CC0000; }
-        #tela-cancelada .bloqueio-badge   { background: #CC0000; }
-
+        #tela-cancelada .bloqueio-icone  { background:#fff0f0; border-color:#CC0000; animation:pulseRed 1.8s ease-in-out infinite; }
+        #tela-cancelada .bloqueio-titulo  { color:#CC0000; }
+        #tela-cancelada .bloqueio-divider { background:#CC0000; }
+        #tela-cancelada .bloqueio-nome    { border-left:4px solid #CC0000; }
+        #tela-cancelada .bloqueio-badge   { background:#CC0000; }
         @keyframes pulseRed {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.3); }
-            50%       { box-shadow: 0 0 0 16px rgba(204,0,0,0); }
+            0%,100%{box-shadow:0 0 0 0 rgba(204,0,0,0.3)}
+            50%{box-shadow:0 0 0 16px rgba(204,0,0,0)}
         }
 
-        /* VENCIDA — laranja */
-        #tela-vencida .bloqueio-icone {
-            background: #fff7f0;
-            border-color: #E07000;
-            animation: pulseOrange 1.8s ease-in-out infinite;
-        }
-        #tela-vencida .bloqueio-titulo  { color: #E07000; }
-        #tela-vencida .bloqueio-divider { background: #E07000; }
-        #tela-vencida .bloqueio-nome    { border-left: 4px solid #E07000; }
-        #tela-vencida .bloqueio-badge   { background: #E07000; }
-
+        #tela-vencida .bloqueio-icone  { background:#fff7f0; border-color:#E07000; animation:pulseOrange 1.8s ease-in-out infinite; }
+        #tela-vencida .bloqueio-titulo  { color:#E07000; }
+        #tela-vencida .bloqueio-divider { background:#E07000; }
+        #tela-vencida .bloqueio-nome    { border-left:4px solid #E07000; }
+        #tela-vencida .bloqueio-badge   { background:#E07000; }
         @keyframes pulseOrange {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(224,112,0,0.3); }
-            50%       { box-shadow: 0 0 0 16px rgba(224,112,0,0); }
+            0%,100%{box-shadow:0 0 0 0 rgba(224,112,0,0.3)}
+            50%{box-shadow:0 0 0 16px rgba(224,112,0,0)}
         }
 
-        /* ── FOOTER ── */
         .footer {
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
-            padding: 14px;
-            text-align: center;
-            color: rgba(255,255,255,0.75);
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            margin-top: 20px;
-            position: relative;
-            z-index: 5;
+            padding: 14px; text-align: center; color: rgba(255,255,255,0.75);
+            font-size: 11px; letter-spacing: 0.5px; margin-top: 20px;
+            position: relative; z-index: 5;
         }
     </style>
 </head>
 <body>
-    <!-- LOADING -->
+
     <div class="loading" id="loading">
         <h2>Carregando carteirinha...</h2>
         <div class="spinner"></div>
     </div>
 
-    <!-- ERRO -->
     <div class="erro" id="erro">
         <h1>❌ Erro</h1>
         <p id="erro-msg">Não foi possível carregar a carteirinha</p>
@@ -452,62 +242,46 @@
 
     <div class="carteirinha" id="carteirinha">
 
-        <!-- ══ TELA CANCELADA (vermelha) ══ -->
         <div id="tela-cancelada" class="tela-bloqueio">
             <div class="bloqueio-icone">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#CC0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="15" y1="9" x2="9" y2="15"/>
-                    <line x1="9" y1="9" x2="15" y2="15"/>
+                    <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
                 </svg>
             </div>
             <div class="bloqueio-titulo">Carteirinha Cancelada</div>
             <div class="bloqueio-divider"></div>
-            <div class="bloqueio-subtitulo">
-                Este funcionário não está mais vinculado ao Atlântico Shopping.<br>O acesso foi revogado.
-            </div>
+            <div class="bloqueio-subtitulo">Este funcionário não está mais vinculado ao Atlântico Shopping.<br>O acesso foi revogado.</div>
             <div class="bloqueio-nome" id="cancel-nome">—</div>
             <div class="bloqueio-data" id="cancel-data"></div>
             <div class="bloqueio-badge">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 6L6 18M6 6l12 12"/>
-                </svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 Acesso Negado
             </div>
         </div>
 
-        <!-- ══ TELA VENCIDA (laranja) ══ -->
         <div id="tela-vencida" class="tela-bloqueio">
             <div class="bloqueio-icone">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#E07000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
             </div>
             <div class="bloqueio-titulo">Carteirinha Vencida</div>
             <div class="bloqueio-divider"></div>
-            <div class="bloqueio-subtitulo">
-                O prazo de validade desta carteirinha expirou.<br>Entre em contato com a administração para renovação.
-            </div>
+            <div class="bloqueio-subtitulo">O prazo de validade desta carteirinha expirou.<br>Entre em contato com a administração para renovação.</div>
             <div class="bloqueio-nome" id="vencida-nome">—</div>
             <div class="bloqueio-data" id="vencida-data"></div>
             <div class="bloqueio-badge">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
                 Prazo Expirado
             </div>
         </div>
 
-        <!-- HEADER -->
         <div class="header">
             <img src="logo_branco.png" class="logo-header" alt="Atlântico Shopping">
         </div>
 
-        <!-- FOTO -->
         <div class="foto-wrap">
             <div class="foto" id="foto-container">
                 <img id="foto" alt="Foto do Funcionário">
@@ -515,35 +289,25 @@
             </div>
         </div>
 
-        <!-- DADOS -->
         <div class="info">
             <div class="nome" id="nome">NOME DO FUNCIONÁRIO</div>
-
             <div class="row">
                 <div class="label">Loja</div>
                 <div class="value" id="loja">Nome da Loja</div>
             </div>
-
             <div class="row">
                 <div class="label">Função</div>
                 <div class="value" id="funcao">Funcionário</div>
             </div>
-
             <div class="row" id="row-documento" style="display:none">
                 <div class="label" id="label-doc">Documento</div>
                 <div class="value" id="val-doc">—</div>
             </div>
-
-            <!-- QR CODE -->
             <div class="qr-section">
                 <div class="qr-label">🔍 QR Code de Validação</div>
-                <div class="qr-code">
-                    <img id="qrcode" src="" alt="QR Code">
-                </div>
+                <div class="qr-code"><img id="qrcode" src="" alt="QR Code"></div>
                 <div class="qr-instruction">Apresente este código ao segurança</div>
             </div>
-
-            <!-- VALIDADE -->
             <div class="validade-bar" id="validade-bar">
                 <div class="validade-inner">
                     <div class="validade-texto">
@@ -564,22 +328,21 @@
 
     <script>
         // ============================================
-        // CONFIGURAÇÃO
+        // CONFIGURAÇÃO — TABELA CARTEIRINHAS
         // ============================================
         const SHEET_ID   = '1BGAp5Kix1FewHezF1A-9yTiaO1sX83y62Yd7npoxNzI';
         const SHEET_NAME = 'Carteirinhas para imprimir';
         const RANGE      = 'A:P';
 
+        // CONFIGURAÇÃO — TABELA CADASTRO DE LOJAS
+        const LOJAS_SHEET_ID   = '1TxA0_FRvPdoJlEuksf46jJ-Cxx2AlwHPd27iKpT_Ci8';
+        const LOJAS_SHEET_NAME = 'Cadastro lojas';
+        const LOJAS_RANGE      = 'A:C';
+
         // ============================================
-        // MAPEAMENTO DE COLUNAS (índice 0-based)
-        // O gviz lê direto da planilha: A=0, B=1, C=2...
-        // Carimbo=A(0), Email=B(1), Loja=C(2), Solicitante=D(3),
-        // Nome=E(4), RG=F(5), Status=G(6), CPF=H(7),
-        // Foto=I(8), Sobrenome=J(9), Função=K(10),
-        // Temporário=L(11), Prazo=M(12), ID=N(13),
-        // Emissão=O(14), Validade=P(15)
+        // MAPEAMENTO — CARTEIRINHAS (A=0, B=1, C=2...)
         // ============================================
-        const COL_LOJA          = 2;   // C - Nome da LOJA
+        const COL_LOJA          = 2;   // C - Nome da LOJA (Ref: grava carimbo da loja)
         const COL_NOME          = 4;   // E - Nome completo funcionário
         const COL_RG            = 5;   // F - Documento RG
         const COL_STATUS        = 6;   // G - Status
@@ -589,6 +352,16 @@
         const COL_ID            = 13;  // N - ID
         const COL_DATA_EMISSAO  = 14;  // O - Data de Emissão
         const COL_DATA_VALIDADE = 15;  // P - Data_Validade
+
+        // MAPEAMENTO — CADASTRO DE LOJAS
+        // AppSheet usa Carimbo de data/hora como chave implícita
+        // pois nenhuma coluna tem KEY marcada na tabela de lojas.
+        // Col A = Carimbo (chave Ref), Col C = Nome da Loja
+        const LOJA_COL_CARIMBO = 0;  // A - Carimbo de data/hora
+        const LOJA_COL_NOME    = 2;  // C - Nome da Loja
+
+        // Cache em memória para não buscar a tabela de lojas múltiplas vezes
+        let cacheLojas = null;
 
         // ============================================
         // FUNÇÕES UTILITÁRIAS
@@ -617,7 +390,7 @@
             if (!str || str.trim() === '') return null;
             var p = str.trim().split('/');
             if (p.length !== 3) return null;
-            var dt = new Date(parseInt(p[2], 10), parseInt(p[1], 10) - 1, parseInt(p[0], 10));
+            var dt = new Date(parseInt(p[2],10), parseInt(p[1],10)-1, parseInt(p[0],10));
             return isNaN(dt.getTime()) ? null : dt;
         }
 
@@ -625,7 +398,7 @@
             var dt = parseDateBR(dataStr);
             if (!dt) return false;
             var hoje = new Date();
-            hoje.setHours(0, 0, 0, 0);
+            hoje.setHours(0,0,0,0);
             return dt < hoje;
         }
 
@@ -661,16 +434,75 @@
                 return;
             }
             var img = document.getElementById('foto');
-            img.onload = function() {
-                img.style.display = 'block';
-                document.getElementById('foto-placeholder').style.display = 'none';
-            };
+            img.onload  = function() { img.style.display = 'block'; document.getElementById('foto-placeholder').style.display = 'none'; };
             img.onerror = function() { tentarCarregarFoto(urls, index + 1); };
             img.src = urls[index];
         }
 
         // ============================================
-        // BUSCA PRINCIPAL
+        // DE-REF: carrega tabela de lojas e resolve
+        // o carimbo gravado pelo AppSheet no campo Ref
+        // ============================================
+        async function carregarTabelaLojas() {
+            if (cacheLojas) return cacheLojas;
+
+            const url = `https://docs.google.com/spreadsheets/d/${LOJAS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(LOJAS_SHEET_NAME)}&range=${LOJAS_RANGE}`;
+
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                cacheLojas = json.table.rows;
+                console.log(`🏪 Tabela de lojas carregada: ${cacheLojas.length} linhas`);
+                return cacheLojas;
+            } catch (error) {
+                console.error('❌ Erro ao carregar tabela de lojas:', error);
+                return [];
+            }
+        }
+
+        async function resolverNomeLoja(valorRef) {
+            // valorRef pode ser:
+            // - já o nome legível (registros salvos antes da mudança para Ref)
+            // - carimbo formatado: "10/05/2025 15:50:15"
+            // - número serial do Google Sheets
+
+            if (!valorRef && valorRef !== 0) return '';
+
+            const refStr = String(valorRef).trim();
+
+            // Se não parece um carimbo (não contém / ou não é número puro),
+            // já é o nome — retorna direto
+            const pareceCarimbo = /^\d{1,2}\/\d{1,2}\/\d{4}/.test(refStr) || /^\d{5}\.?\d*$/.test(refStr);
+            if (!pareceCarimbo) {
+                console.log('🏪 Loja já é nome legível:', refStr);
+                return refStr;
+            }
+
+            // É um carimbo — busca na tabela de lojas
+            console.log('🔗 Resolvendo Ref:', refStr);
+            const rows = await carregarTabelaLojas();
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i].c;
+                if (!row || !row[LOJA_COL_CARIMBO]) continue;
+
+                const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
+                const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
+
+                if (celV === refStr || celF === refStr) {
+                    const nome = row[LOJA_COL_NOME]?.v || '';
+                    console.log('✅ Loja resolvida:', nome);
+                    return nome;
+                }
+            }
+
+            console.warn('⚠️ Loja não encontrada para ref:', refStr);
+            return refStr; // fallback: mostra o valor bruto
+        }
+
+        // ============================================
+        // BUSCA PRINCIPAL — TABELA CARTEIRINHAS
         // ============================================
         async function buscarDadosSheets(id) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
@@ -691,18 +523,25 @@
                     if (rowId === id) {
                         console.log('✅ Funcionário encontrado na linha', i + 1);
 
+                        // Valor bruto do campo Ref (carimbo ou nome legível)
+                        const lojaRef = row[COL_LOJA]?.f || row[COL_LOJA]?.v || '';
+                        console.log('🔗 Loja Ref bruto:', lojaRef);
+
+                        // Resolve para nome legível
+                        const nomeLoja = await resolverNomeLoja(lojaRef);
+
                         const dataEmissaoVal  = row[COL_DATA_EMISSAO]?.f  || row[COL_DATA_EMISSAO]?.v  || '';
                         const dataValidadeVal = row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || '';
 
-                        console.log('🏪 Loja:', row[COL_LOJA]?.v);
                         console.log('👤 Nome:', row[COL_NOME]?.v);
+                        console.log('🏪 Loja resolvida:', nomeLoja);
                         console.log('📋 Status:', row[COL_STATUS]?.v);
                         console.log('📅 Emissão:', dataEmissaoVal);
                         console.log('📅 Validade:', dataValidadeVal);
 
                         return {
                             nome:         row[COL_NOME]?.v   || '',
-                            loja:         row[COL_LOJA]?.v   || '',
+                            loja:         nomeLoja,
                             rg:           row[COL_RG]?.v     || '',
                             cpf:          row[COL_CPF]?.v    || '',
                             foto:         row[COL_FOTO]?.v   || '',
@@ -806,24 +645,18 @@
             console.log('🎫 Carteirinha Digital - Atlântico Shopping');
 
             const id = getUrlParameter('id');
-            if (!id) {
-                mostrarErro('ID não fornecido na URL');
-                return;
-            }
+            if (!id) { mostrarErro('ID não fornecido na URL'); return; }
 
             console.log('🆔 ID:', id);
 
             try {
                 const dados = await buscarDadosSheets(id);
-                if (!dados) {
-                    mostrarErro('Funcionário não encontrado');
-                    return;
-                }
+                if (!dados) { mostrarErro('Funcionário não encontrado'); return; }
                 console.log('📦 Dados:', dados);
                 exibirCarteirinha(dados, id);
             } catch (error) {
                 console.error('💥 Erro:', error);
-                mostrarErro('Erro ao carregar dados. Verifique se a planilha está pública (Compartilhar → Qualquer pessoa → Leitor)');
+                mostrarErro('Erro ao carregar dados. Verifique se as planilhas estão públicas (Compartilhar → Qualquer pessoa → Leitor)');
             }
         };
     </script>
