@@ -242,7 +242,7 @@
             font-weight: 500;
         }
 
-        /* ── VALIDADE — temporária ainda válida ── */
+        /* ── VALIDADE ── */
         .validade-bar {
             display: none;
             margin: 18px 22px 0;
@@ -302,9 +302,7 @@
             opacity: 0.85;
         }
 
-        /* ══════════════════════════════════
-           TELAS DE BLOQUEIO
-        ══════════════════════════════════ */
+        /* ══ TELAS DE BLOQUEIO ══ */
         .tela-bloqueio {
             display: none;
             position: absolute;
@@ -566,40 +564,54 @@
 
     <script>
         // ============================================
-        // CONFIGURAÇÃO
+        // CONFIGURAÇÃO — TABELA CARTEIRINHAS
         // ============================================
-        const SHEET_ID = '1BGAp5Kix1FewHezF1A-9yTiaO1sX83y62Yd7npoxNzI';
+        const SHEET_ID   = '1BGAp5Kix1FewHezF1A-9yTiaO1sX83y62Yd7npoxNzI';
         const SHEET_NAME = 'Carteirinhas para imprimir';
-        const RANGE = 'A:P';  // Inclui até coluna P
-        
-        // MAPEAMENTO DAS COLUNAS
-        const COL_ID = 13;              // Coluna N - ID
-        const COL_NOME = 4;             // Coluna E - Nome completo funcionário
-        const COL_LOJA = 2;             // Coluna C - Nome da LOJA
-        const COL_RG = 5;               // Coluna F - Documento RG
-        const COL_CPF = 7;              // Coluna H - Documento CPF
-        const COL_FOTO = 8;             // Coluna I - Insira uma Foto...
-        const COL_STATUS = 6;           // Coluna G - Status
-        const COL_FUNCAO = 10;          // Coluna K - Função
-        const COL_DATA_EMISSAO = 14;    // Coluna O - Data de Emissão
-        const COL_DATA_VALIDADE = 15;   // Coluna P - Data_Validade
-        
+        const RANGE      = 'A:Q';
+
+        // CONFIGURAÇÃO — TABELA CADASTRO DE LOJAS
+        const LOJAS_SHEET_ID   = '1TxA0_FRvPdoJlEuksf46jJ-Cxx2AlwHPd27iKpT_Ci8';
+        const LOJAS_SHEET_NAME = 'Cadastro lojas';
+        const LOJAS_RANGE      = 'A:C';
+
         // ============================================
-        // FUNÇÕES
+        // MAPEAMENTO DE COLUNAS — CARTEIRINHAS
+        // índice 0-based; col A=0 (_RowNumber virtual do gviz)
         // ============================================
-        
+        const COL_LOJA          = 3;   // D - Nome da LOJA (valor Ref = carimbo da loja)
+        const COL_NOME          = 5;   // F - Nome completo funcionário
+        const COL_RG            = 6;   // G - Documento RG
+        const COL_STATUS        = 7;   // H - Status
+        const COL_CPF           = 8;   // I - Documento CPF
+        const COL_FOTO          = 9;   // J - Foto
+        const COL_FUNCAO        = 11;  // L - Função
+        const COL_ID            = 14;  // O - ID
+        const COL_DATA_EMISSAO  = 15;  // P - Data de Emissão
+        const COL_DATA_VALIDADE = 16;  // Q - Data_Validade
+
+        // MAPEAMENTO DE COLUNAS — CADASTRO DE LOJAS
+        // O AppSheet usa o Carimbo de data/hora como chave implícita da tabela de lojas
+        // pois nenhuma coluna tem KEY marcada — é esse valor que fica gravado no campo Ref
+        const LOJA_COL_CARIMBO = 0;  // A - Carimbo de data/hora (chave Ref)
+        const LOJA_COL_NOME    = 2;  // C - Nome da Loja (ajuste se necessário)
+
+        // ============================================
+        // FUNÇÕES UTILITÁRIAS
+        // ============================================
+
         function getUrlParameter(name) {
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
             const results = regex.exec(location.search);
             return results ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : null;
         }
-        
+
         function mostrarErro(mensagem) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('erro').style.display = 'block';
             document.getElementById('erro-msg').textContent = mensagem;
         }
-        
+
         function formatarData(valor) {
             if (!valor) return '';
             if (typeof valor === 'string' && valor.includes('/')) return valor;
@@ -607,72 +619,23 @@
             if (isNaN(data.getTime())) return '';
             return data.toLocaleDateString('pt-BR');
         }
-        
-        // Calcula data de validade baseada em emissão + prazo
-        function calcularDataValidade(dataEmissaoStr, prazoTexto) {
-            if (!dataEmissaoStr || !prazoTexto) return '';
-            
-            // Parse da data de emissão (formato: DD/MM/AAAA ou objeto Date)
-            let dataEmissao;
-            if (typeof dataEmissaoStr === 'string' && dataEmissaoStr.includes('/')) {
-                const partes = dataEmissaoStr.split('/');
-                dataEmissao = new Date(partes[2], partes[1] - 1, partes[0]);
-            } else {
-                dataEmissao = new Date(dataEmissaoStr);
-            }
-            
-            if (isNaN(dataEmissao.getTime())) return '';
-            
-            // Interpreta o prazo
-            const prazo = prazoTexto.toLowerCase().trim();
-            let dataValidade = new Date(dataEmissao);
-            
-            // Dias
-            if (prazo.includes('15 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 15);
-            } else if (prazo.includes('30 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 30);
-            } else if (prazo.includes('60 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 60);
-            } else if (prazo.includes('90 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 90);
-            }
-            // Anos
-            else if (prazo.includes('1 ano') || prazo.includes('um ano')) {
-                dataValidade.setFullYear(dataValidade.getFullYear() + 1);
-            } else if (prazo.includes('2 anos') || prazo.includes('dois anos')) {
-                dataValidade.setFullYear(dataValidade.getFullYear() + 2);
-            }
-            // Meses
-            else if (prazo.includes('3 meses') || prazo.includes('três meses')) {
-                dataValidade.setMonth(dataValidade.getMonth() + 3);
-            } else if (prazo.includes('6 meses') || prazo.includes('seis meses')) {
-                dataValidade.setMonth(dataValidade.getMonth() + 6);
-            }
-            // Default: 1 ano
-            else {
-                dataValidade.setFullYear(dataValidade.getFullYear() + 1);
-            }
-            
-            return dataValidade.toLocaleDateString('pt-BR');
-        }
-        
+
         function parseDateBR(str) {
             if (!str || str.trim() === '') return null;
             var p = str.trim().split('/');
             if (p.length !== 3) return null;
-            var dt = new Date(parseInt(p[2],10), parseInt(p[1],10)-1, parseInt(p[0],10));
+            var dt = new Date(parseInt(p[2], 10), parseInt(p[1], 10) - 1, parseInt(p[0], 10));
             return isNaN(dt.getTime()) ? null : dt;
         }
-        
+
         function isVencida(dataStr) {
             var dt = parseDateBR(dataStr);
             if (!dt) return false;
             var hoje = new Date();
-            hoje.setHours(0,0,0,0);
+            hoje.setHours(0, 0, 0, 0);
             return dt < hoje;
         }
-        
+
         function processarUrlFoto(fotoParam) {
             if (!fotoParam || fotoParam.trim() === '') return null;
             var url = fotoParam.trim();
@@ -689,7 +652,7 @@
             if (url.startsWith('http')) return [url];
             return null;
         }
-        
+
         function montarUrlsAlternativas(id) {
             return [
                 'https://drive.google.com/thumbnail?id=' + id + '&sz=w400',
@@ -697,7 +660,7 @@
                 'https://drive.google.com/uc?export=view&id=' + id,
             ];
         }
-        
+
         function tentarCarregarFoto(urls, index) {
             if (!urls || index >= urls.length) {
                 document.getElementById('foto-placeholder').style.display = 'flex';
@@ -712,170 +675,223 @@
             img.onerror = function() { tentarCarregarFoto(urls, index + 1); };
             img.src = urls[index];
         }
-        
+
+        // ============================================
+        // DE-REF: busca o nome da loja pelo valor
+        // do Carimbo gravado na coluna Ref
+        // ============================================
+        async function buscarNomeLoja(carimboBruto) {
+            if (!carimboBruto && carimboBruto !== 0) return '';
+
+            const url = `https://docs.google.com/spreadsheets/d/${LOJAS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(LOJAS_SHEET_NAME)}&range=${LOJAS_RANGE}`;
+
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = json.table.rows;
+
+                // O valor gravado pelo AppSheet no campo Ref pode ser
+                // o número serial (v) ou a data formatada (f) do carimbo.
+                // Comparamos os dois para garantir o match.
+                const refStr = String(carimboBruto).trim();
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i].c;
+                    if (!row || !row[LOJA_COL_CARIMBO]) continue;
+
+                    const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
+                    const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
+
+                    if (celV === refStr || celF === refStr) {
+                        const nomeLoja = row[LOJA_COL_NOME]?.v || '';
+                        console.log('🏪 Loja encontrada:', nomeLoja);
+                        return nomeLoja;
+                    }
+                }
+
+                console.warn('⚠️ Loja não encontrada para ref:', refStr);
+                // Fallback: retorna o valor bruto para não deixar campo vazio
+                return String(carimboBruto);
+            } catch (error) {
+                console.error('❌ Erro ao buscar tabela de lojas:', error);
+                return '';
+            }
+        }
+
+        // ============================================
+        // BUSCA PRINCIPAL — TABELA CARTEIRINHAS
+        // ============================================
         async function buscarDadosSheets(id) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
-            
+
             try {
                 console.log('🔍 Buscando dados do Google Sheets...');
                 const response = await fetch(url);
                 const text = await response.text();
-                
+
                 const json = JSON.parse(text.substr(47).slice(0, -2));
                 const rows = json.table.rows;
-                
+
                 console.log(`📊 ${rows.length} linhas encontradas`);
-                
+
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i].c;
                     const rowId = row[COL_ID]?.v?.toString();
-                    
+
                     if (rowId === id) {
                         console.log('✅ Funcionário encontrado!');
-                        
-                        // DEBUG: Ver valores brutos das datas
-                        console.log('🔍 DEBUG Data Emissão RAW:', row[COL_DATA_EMISSAO]);
-                        console.log('🔍 DEBUG Data Validade RAW:', row[COL_DATA_VALIDADE]);
-                        
-                        // Extrai valores das datas (podem vir como objeto com .v ou .f)
+
+                        // Valor bruto gravado pelo AppSheet no campo Ref
+                        const lojaRef = row[COL_LOJA]?.v ?? row[COL_LOJA]?.f ?? '';
+                        console.log('🔗 Loja Ref bruto:', lojaRef);
+
+                        // De-ref: resolve o nome real da loja
+                        const nomeLoja = await buscarNomeLoja(lojaRef);
+
+                        // Datas
                         const dataEmissaoVal = row[COL_DATA_EMISSAO]?.f || row[COL_DATA_EMISSAO]?.v || '';
                         const dataValidadeVal = row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || '';
-                        
-                        console.log('📅 DEBUG Emissão extraída:', dataEmissaoVal);
-                        console.log('📅 DEBUG Validade extraída:', dataValidadeVal);
-                        
+
+                        console.log('📅 Emissão:', dataEmissaoVal);
+                        console.log('📅 Validade:', dataValidadeVal);
+
                         return {
-                            nome: row[COL_NOME]?.v || '',
-                            loja: row[COL_LOJA]?.v || '',
-                            rg: row[COL_RG]?.v || '',
-                            cpf: row[COL_CPF]?.v || '',
-                            foto: row[COL_FOTO]?.v || '',
-                            status: row[COL_STATUS]?.v || '',
-                            funcao: row[COL_FUNCAO]?.v || 'Funcionário',
-                            dataEmissao: dataEmissaoVal,
+                            nome:         row[COL_NOME]?.v   || '',
+                            loja:         nomeLoja,
+                            rg:           row[COL_RG]?.v     || '',
+                            cpf:          row[COL_CPF]?.v    || '',
+                            foto:         row[COL_FOTO]?.v   || '',
+                            status:       row[COL_STATUS]?.v || '',
+                            funcao:       row[COL_FUNCAO]?.v || 'Funcionário',
+                            dataEmissao:  dataEmissaoVal,
                             dataValidade: dataValidadeVal
                         };
                     }
                 }
-                
+
                 return null;
             } catch (error) {
                 console.error('❌ Erro ao buscar dados:', error);
                 throw error;
             }
         }
-        
+
+        // ============================================
+        // RENDERIZAÇÃO DA CARTEIRINHA
+        // ============================================
         function exibirCarteirinha(dados, id) {
-            const emissao = formatarData(dados.dataEmissao);
+            const emissao  = formatarData(dados.dataEmissao);
             const validade = formatarData(dados.dataValidade);
-            const status = dados.status.trim();
-            
+            const status   = dados.status.trim();
+
             console.log('📋 Status:', status);
             console.log('📅 Emissão:', emissao);
             console.log('📅 Validade:', validade);
-            
-            // CANCELADA/ARQUIVADA/INVÁLIDA
+
+            // CANCELADA / ARQUIVADA / INVÁLIDA
             if (status === 'Cancelada' || status === 'Arquivada' || status === 'Inválida') {
                 document.getElementById('tela-cancelada').classList.add('ativo');
                 if (dados.nome) document.getElementById('cancel-nome').textContent = dados.nome.toUpperCase();
-                if (emissao) document.getElementById('cancel-data').textContent = 'Carteirinha emitida em ' + emissao;
-                
+                if (emissao)    document.getElementById('cancel-data').textContent = 'Carteirinha emitida em ' + emissao;
+
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('carteirinha').style.display = 'block';
                 return;
             }
-            
+
             // VENCIDA
             if (validade && validade.trim() !== '' && isVencida(validade)) {
                 document.getElementById('tela-vencida').classList.add('ativo');
-                if (dados.nome) document.getElementById('vencida-nome').textContent = dados.nome.toUpperCase();
+                if (dados.nome)   document.getElementById('vencida-nome').textContent = dados.nome.toUpperCase();
                 if (validade) document.getElementById('vencida-data').textContent = 'Vencida em ' + validade;
-                
+
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('carteirinha').style.display = 'block';
                 return;
             }
-            
+
             // ATIVA
-            if (dados.nome) document.getElementById('nome').textContent = dados.nome.toUpperCase();
-            if (dados.loja) document.getElementById('loja').textContent = dados.loja;
-            if (dados.funcao) document.getElementById('funcao').textContent = dados.funcao;
-            
-            const rowDoc = document.getElementById('row-documento');
+            if (dados.nome)   document.getElementById('nome').textContent    = dados.nome.toUpperCase();
+            if (dados.loja)   document.getElementById('loja').textContent    = dados.loja;
+            if (dados.funcao) document.getElementById('funcao').textContent  = dados.funcao;
+
+            const rowDoc   = document.getElementById('row-documento');
             const labelDoc = document.getElementById('label-doc');
-            const valDoc = document.getElementById('val-doc');
-            
-            // Converte RG e CPF para string se necessário
-            const rg = dados.rg ? String(dados.rg).trim() : '';
+            const valDoc   = document.getElementById('val-doc');
+
+            const rg  = dados.rg  ? String(dados.rg).trim()  : '';
             const cpf = dados.cpf ? String(dados.cpf).trim() : '';
-            
+
             if (rg && rg !== '') {
-                labelDoc.textContent = 'Documento (RG)';
-                valDoc.textContent = rg;
-                rowDoc.style.display = 'block';
+                labelDoc.textContent    = 'Documento (RG)';
+                valDoc.textContent      = rg;
+                rowDoc.style.display    = 'block';
             } else if (cpf && cpf !== '') {
-                labelDoc.textContent = 'CPF';
-                valDoc.textContent = cpf;
-                rowDoc.style.display = 'block';
+                labelDoc.textContent    = 'CPF';
+                valDoc.textContent      = cpf;
+                rowDoc.style.display    = 'block';
             }
-            
+
             const urls = processarUrlFoto(dados.foto);
             if (urls && urls.length > 0) tentarCarregarFoto(urls, 0);
-            
-            // QR Code - reconstrói a URL manualmente para garantir que está limpa
-            const baseUrl = 'https://suporteoperacional-atl.github.io/carteirinha-digital/';
+
+            // QR Code
+            const baseUrl  = 'https://suporteoperacional-atl.github.io/carteirinha-digital/';
             const urlLimpa = baseUrl + '?id=' + id;
-            
             console.log('🔗 URL do QR Code:', urlLimpa);
-            
+
             const qr = document.getElementById('qrcode');
             qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlLimpa) + '&size=400';
             qr.onerror = function() {
                 this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlLimpa);
             };
-            
-            // BARRA VERDE DE VALIDADE
+
+            // Barra verde de validade
             if (validade && validade.trim() !== '') {
                 document.getElementById('validade-bar').style.display = 'block';
-                document.getElementById('validade-data').textContent = validade;
+                document.getElementById('validade-data').textContent  = validade;
                 if (emissao && emissao.trim() !== '') {
                     document.getElementById('emissao-info').textContent = 'Emitida em ' + emissao;
                 }
             }
-            
-            document.getElementById('data-consulta').textContent = 
+
+            document.getElementById('data-consulta').textContent =
                 'Atualizado: ' + new Date().toLocaleString('pt-BR');
-            
-            document.getElementById('loading').style.display = 'none';
+
+            document.getElementById('loading').style.display    = 'none';
             document.getElementById('carteirinha').style.display = 'block';
         }
-        
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         window.onload = async function() {
             console.log('🎫 Carteirinha Digital - Atlântico Shopping');
-            
+
             const id = getUrlParameter('id');
-            
+
             if (!id) {
                 mostrarErro('ID não fornecido na URL');
                 return;
             }
-            
+
             console.log('🆔 ID:', id);
-            
+
             try {
                 const dados = await buscarDadosSheets(id);
-                
+
                 if (!dados) {
                     mostrarErro('Funcionário não encontrado');
                     return;
                 }
-                
+
                 console.log('📦 Dados:', dados);
                 exibirCarteirinha(dados, id);
-                
+
             } catch (error) {
                 console.error('💥 Erro:', error);
-                mostrarErro('Erro ao carregar dados. Verifique se a planilha está pública (Compartilhar → Qualquer pessoa → Leitor)');
+                mostrarErro('Erro ao carregar dados. Verifique se as planilhas estão públicas (Compartilhar → Qualquer pessoa → Leitor)');
             }
         };
     </script>
