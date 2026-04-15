@@ -468,6 +468,25 @@
             }
         }
 
+        // Normaliza carimbo para comparação:
+        // "14/4/2026 9:04:56" → "14/04/2026 09:04:56"
+        // "4/14/2026 9:04:56" → detecta formato MM/DD e converte para DD/MM
+        function normalizar(str) {
+            if (!str) return '';
+            str = str.trim().replace(/\s+/g, ' ');
+
+            // Tenta extrair partes: data e hora
+            const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
+            if (!m) return str.toLowerCase();
+
+            let [, p1, p2, ano, h, min, seg] = m;
+            p1 = p1.padStart(2, '0');
+            p2 = p2.padStart(2, '0');
+            h  = h.padStart(2, '0');
+
+            return `${p1}/${p2}/${ano} ${h}:${min}:${seg}`;
+        }
+
         async function resolverNomeLoja(valorRef) {
             // valorRef pode ser:
             // - já o nome legível (registros salvos antes da mudança para Ref)
@@ -497,25 +516,9 @@
                 const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
                 const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
 
-                // Compara exato primeiro; fallback sem segundos só se não achar nada
-                if (celV === refStr || celF === refStr) {
+                if (normalizar(celV) === normalizar(refStr) || normalizar(celF) === normalizar(refStr)) {
                     const nome = row[LOJA_COL_NOME]?.v || '';
                     console.log('✅ Loja resolvida:', nome);
-                    return nome;
-                }
-            }
-
-            // Fallback: tenta comparar sem segundos (cobre diferença de 1s do AppSheet)
-            // Ex: "14/04/2025 21:01:05" casa com "14/04/2025 21:01:06"
-            const refSemSeg = refStr.substring(0, 14); // "dd/mm/aaaa hh:"
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i].c;
-                if (!row || !row[LOJA_COL_CARIMBO]) continue;
-                const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
-                const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
-                if (celF.substring(0, 14) === refSemSeg || celV.substring(0, 14) === refSemSeg) {
-                    const nome = row[LOJA_COL_NOME]?.v || '';
-                    console.log('✅ Loja resolvida (fallback sem segundos):', nome);
                     return nome;
                 }
             }
