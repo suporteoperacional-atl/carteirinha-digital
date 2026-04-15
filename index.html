@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carteirinha Digital - Atlântico Shopping</title>
 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a5f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Carteirinha Atlântico">
+    <link rel="apple-touch-icon" href="logo_branco.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -490,19 +497,31 @@
                 const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
                 const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
 
-                // Compara exato ou sem segundos (AppSheet pode gravar com 1s de diferença)
-                const refSemSeg = refStr.substring(0, 15);   // "dd/mm/aaaa hh:m"
-                const celVSemSeg = celV.substring(0, 15);
-                const celFSemSeg = celF.substring(0, 15);
-                if (celV === refStr || celF === refStr || celVSemSeg === refSemSeg || celFSemSeg === refSemSeg) {
+                // Compara exato primeiro; fallback sem segundos só se não achar nada
+                if (celV === refStr || celF === refStr) {
                     const nome = row[LOJA_COL_NOME]?.v || '';
                     console.log('✅ Loja resolvida:', nome);
                     return nome;
                 }
             }
 
+            // Fallback: tenta comparar sem segundos (cobre diferença de 1s do AppSheet)
+            // Ex: "14/04/2025 21:01:05" casa com "14/04/2025 21:01:06"
+            const refSemSeg = refStr.substring(0, 14); // "dd/mm/aaaa hh:"
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i].c;
+                if (!row || !row[LOJA_COL_CARIMBO]) continue;
+                const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
+                const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
+                if (celF.substring(0, 14) === refSemSeg || celV.substring(0, 14) === refSemSeg) {
+                    const nome = row[LOJA_COL_NOME]?.v || '';
+                    console.log('✅ Loja resolvida (fallback sem segundos):', nome);
+                    return nome;
+                }
+            }
+
             console.warn('⚠️ Loja não encontrada para ref:', refStr);
-            return refStr; // fallback: mostra o valor bruto
+            return refStr; // último fallback: mostra o valor bruto
         }
 
         // ============================================
@@ -663,6 +682,14 @@
                 mostrarErro('Erro ao carregar dados. Verifique se as planilhas estão públicas (Compartilhar → Qualquer pessoa → Leitor)');
             }
         };
+        // ── Registro do Service Worker (PWA) ──
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/carteirinha-digital/sw.js')
+                    .then(reg => console.log('✅ Service Worker registrado:', reg.scope))
+                    .catch(err => console.warn('⚠️ Service Worker falhou:', err));
+            });
+        }
     </script>
 </body>
 </html>
