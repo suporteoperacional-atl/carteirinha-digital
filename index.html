@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carteirinha Digital - Atlântico Shopping</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e3a5f">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Carteirinha Atlântico">
-    <link rel="apple-touch-icon" href="logo_branco.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -243,9 +236,6 @@
     </div>
 
     <script>
-        // ============================================
-        // CONFIGURAÇÃO
-        // ============================================
         const SHEET_ID   = '1BGAp5Kix1FewHezF1A-9yTiaO1sX83y62Yd7npoxNzI';
         const SHEET_NAME = 'Carteirinhas para imprimir';
         const RANGE      = 'A:P';
@@ -254,30 +244,22 @@
         const LOJAS_SHEET_NAME = 'Cadastro lojas';
         const LOJAS_RANGE      = 'A:C';
 
-        // ============================================
-        // MAPEAMENTO DE COLUNAS (A=0, B=1, C=2 ...)
-        // ============================================
-        const COL_LOJA          = 2;   // C - Nome da LOJA (Ref → grava serial numérico)
-        const COL_NOME          = 4;   // E - Nome completo funcionário
-        const COL_RG            = 5;   // F - Documento RG
-        const COL_STATUS        = 6;   // G - Status
-        const COL_CPF           = 7;   // H - Documento CPF
-        const COL_FOTO          = 8;   // I - Foto
-        const COL_FUNCAO        = 10;  // K - Função
-        const COL_ID            = 13;  // N - ID
-        const COL_DATA_EMISSAO  = 14;  // O - Data de Emissão
-        const COL_DATA_VALIDADE = 15;  // P - Data_Validade
+        const COL_LOJA          = 2;
+        const COL_NOME          = 4;
+        const COL_RG            = 5;
+        const COL_STATUS        = 6;
+        const COL_CPF           = 7;
+        const COL_FOTO          = 8;
+        const COL_FUNCAO        = 10;
+        const COL_ID            = 13;
+        const COL_DATA_EMISSAO  = 14;
+        const COL_DATA_VALIDADE = 15;
 
-        // Cadastro de Lojas
-        const LOJA_COL_CARIMBO = 0;   // A - Carimbo (chave Ref — número serial)
-        const LOJA_COL_NOME    = 2;   // C - Nome da Loja
+        const LOJA_COL_CARIMBO = 0;
+        const LOJA_COL_NOME    = 2;
 
-        // Cache da tabela de lojas
         let cacheLojas = null;
 
-        // ============================================
-        // UTILITÁRIOS
-        // ============================================
         function getUrlParameter(name) {
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
             const results = regex.exec(location.search);
@@ -312,6 +294,14 @@
             return d < hoje;
         }
 
+        function urlsDrive(id) {
+            return [
+                'https://drive.google.com/thumbnail?id=' + id + '&sz=w400',
+                'https://lh3.googleusercontent.com/d/' + id,
+                'https://drive.google.com/uc?export=view&id=' + id,
+            ];
+        }
+
         function processarUrlFoto(f) {
             if (!f || !f.trim()) return null;
             let url = f.trim();
@@ -327,14 +317,6 @@
             return null;
         }
 
-        function urlsDrive(id) {
-            return [
-                'https://drive.google.com/thumbnail?id=' + id + '&sz=w400',
-                'https://lh3.googleusercontent.com/d/' + id,
-                'https://drive.google.com/uc?export=view&id=' + id,
-            ];
-        }
-
         function tentarFoto(urls, i) {
             if (!urls || i >= urls.length) {
                 document.getElementById('foto-placeholder').style.display = 'flex';
@@ -347,9 +329,6 @@
             img.src = urls[i];
         }
 
-        // ============================================
-        // CARREGA TABELA DE LOJAS (com cache)
-        // ============================================
         async function carregarLojas() {
             if (cacheLojas) return cacheLojas;
             const url = `https://docs.google.com/spreadsheets/d/${LOJAS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(LOJAS_SHEET_NAME)}&range=${LOJAS_RANGE}`;
@@ -366,31 +345,17 @@
             }
         }
 
-        // ============================================
-        // RESOLVE NOME DA LOJA A PARTIR DO VALOR REF
-        //
-        // O AppSheet grava na célula o número serial do
-        // carimbo da loja (ex: 45953.6923...).
-        // Comparamos os seriais numericamente — precisão
-        // total, sem risco de diferença de formatação.
-        //
-        // Registros antigos (antes da mudança para Ref)
-        // têm o nome textual direto na célula — esses
-        // são detectados pela ausência de serial numérico.
-        // ============================================
         async function resolverLoja(celV, celF) {
-            // celV = valor numérico (.v), celF = valor formatado (.f)
             const serial = parseFloat(celV);
 
-            // Se não é um número serial de data (> 40000 ≈ ano 2009),
-            // o valor já é o nome legível — retorna direto
+            // Valor não é serial numérico de data — já é nome legível (registros antigos)
             if (isNaN(serial) || serial < 40000) {
                 const nome = String(celF ?? celV ?? '').trim();
                 console.log('🏪 Nome direto:', nome);
                 return nome;
             }
 
-            // É serial — busca na tabela de lojas
+            // É serial — busca na tabela de lojas por comparação numérica
             console.log('🔗 Buscando loja por serial:', serial);
             const rows = await carregarLojas();
 
@@ -398,22 +363,17 @@
                 const r = rows[i].c;
                 if (!r || r[LOJA_COL_CARIMBO] == null) continue;
                 const lojaSerial = parseFloat(r[LOJA_COL_CARIMBO].v);
-                // Tolerância mínima: cobre apenas arredondamento de float
                 if (!isNaN(lojaSerial) && Math.abs(lojaSerial - serial) < 0.000012) {
                     const nome = r[LOJA_COL_NOME]?.v || '';
-                    console.log('✅ Loja encontrada:', nome, '| serial:', lojaSerial);
+                    console.log('✅ Loja encontrada:', nome);
                     return nome;
                 }
             }
 
-            // Não encontrou — retorna o valor formatado como fallback
             console.warn('⚠️ Loja não encontrada para serial:', serial);
             return String(celF ?? celV ?? '');
         }
 
-        // ============================================
-        // BUSCA DADOS DA CARTEIRINHA
-        // ============================================
         async function buscarDados(id) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
             const r = await fetch(url);
@@ -425,19 +385,16 @@
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i].c;
                 if (row[COL_ID]?.v?.toString() !== id) continue;
-
                 console.log('✅ Linha', i+1);
-
                 const loja = await resolverLoja(row[COL_LOJA]?.v, row[COL_LOJA]?.f);
-
                 return {
-                    nome:         row[COL_NOME]?.v    || '',
+                    nome:         row[COL_NOME]?.v   || '',
                     loja:         loja,
-                    rg:           row[COL_RG]?.v      || '',
-                    cpf:          row[COL_CPF]?.v     || '',
-                    foto:         row[COL_FOTO]?.v    || '',
-                    status:       row[COL_STATUS]?.v  || '',
-                    funcao:       row[COL_FUNCAO]?.v  || 'Funcionário',
+                    rg:           row[COL_RG]?.v     || '',
+                    cpf:          row[COL_CPF]?.v    || '',
+                    foto:         row[COL_FOTO]?.v   || '',
+                    status:       row[COL_STATUS]?.v || '',
+                    funcao:       row[COL_FUNCAO]?.v || 'Funcionário',
                     dataEmissao:  row[COL_DATA_EMISSAO]?.f  || row[COL_DATA_EMISSAO]?.v  || '',
                     dataValidade: row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || ''
                 };
@@ -445,9 +402,6 @@
             return null;
         }
 
-        // ============================================
-        // RENDERIZA A CARTEIRINHA
-        // ============================================
         function exibir(dados, id) {
             const emissao  = formatarData(dados.dataEmissao);
             const validade = formatarData(dados.dataValidade);
@@ -455,7 +409,6 @@
 
             console.log('📋 Status:', status, '| Loja:', dados.loja);
 
-            // CANCELADA / ARQUIVADA / INVÁLIDA
             if (['Cancelada','Arquivada','Inválida'].includes(status)) {
                 document.getElementById('tela-cancelada').classList.add('ativo');
                 document.getElementById('cancel-nome').textContent = dados.nome.toUpperCase();
@@ -465,7 +418,6 @@
                 return;
             }
 
-            // VENCIDA
             if (validade && isVencida(validade)) {
                 document.getElementById('tela-vencida').classList.add('ativo');
                 document.getElementById('vencida-nome').textContent = dados.nome.toUpperCase();
@@ -475,7 +427,6 @@
                 return;
             }
 
-            // ATIVA
             document.getElementById('nome').textContent   = dados.nome.toUpperCase();
             document.getElementById('loja').textContent   = dados.loja;
             document.getElementById('funcao').textContent = dados.funcao;
@@ -483,12 +434,12 @@
             const rg  = String(dados.rg  ?? '').trim();
             const cpf = String(dados.cpf ?? '').trim();
             if (rg) {
-                document.getElementById('label-doc').textContent    = 'Documento (RG)';
-                document.getElementById('val-doc').textContent      = rg;
+                document.getElementById('label-doc').textContent       = 'Documento (RG)';
+                document.getElementById('val-doc').textContent         = rg;
                 document.getElementById('row-documento').style.display = 'block';
             } else if (cpf) {
-                document.getElementById('label-doc').textContent    = 'CPF';
-                document.getElementById('val-doc').textContent      = cpf;
+                document.getElementById('label-doc').textContent       = 'CPF';
+                document.getElementById('val-doc').textContent         = cpf;
                 document.getElementById('row-documento').style.display = 'block';
             }
 
@@ -511,9 +462,6 @@
             document.getElementById('carteirinha').style.display = 'block';
         }
 
-        // ============================================
-        // INICIALIZAÇÃO
-        // ============================================
         window.onload = async function() {
             console.log('🎫 Carteirinha Digital - Atlântico Shopping');
             const id = getUrlParameter('id');
@@ -528,15 +476,6 @@
                 mostrarErro('Erro ao carregar. Verifique se as planilhas estão públicas.');
             }
         };
-
-        // Service Worker (PWA)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/carteirinha-digital/sw.js')
-                    .then(r => console.log('✅ SW:', r.scope))
-                    .catch(e => console.warn('⚠️ SW:', e));
-            });
-        }
     </script>
 </body>
 </html>
