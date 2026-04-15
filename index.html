@@ -261,6 +261,10 @@
         let cacheLojas = null;
 
         function getUrlParameter(name) {
+            // Tenta primeiro no hash (#ID-XXXX) — preservado nos atalhos do navegador
+            const hash = location.hash.replace('#', '').trim();
+            if (hash) return hash;
+            // Fallback: query string (?id=ID-XXXX) — para links antigos já enviados
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
             const results = regex.exec(location.search);
             return results ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : null;
@@ -446,7 +450,7 @@
             tentarFoto(processarUrlFoto(dados.foto), 0);
 
             const baseUrl = 'https://suporteoperacional-atl.github.io/carteirinha-digital/';
-            const qrUrl   = baseUrl + '?id=' + id;
+            const qrUrl   = baseUrl + '#' + id;
             const qr = document.getElementById('qrcode');
             qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(qrUrl) + '&size=400';
             qr.onerror = () => { qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(qrUrl); };
