@@ -468,63 +468,46 @@
             }
         }
 
-        // Normaliza carimbo para comparação:
-        // "14/4/2026 9:04:56" → "14/04/2026 09:04:56"
-        // "4/14/2026 9:04:56" → detecta formato MM/DD e converte para DD/MM
-        function normalizar(str) {
-            if (!str) return '';
-            str = str.trim().replace(/\s+/g, ' ');
+        async function resolverNomeLoja(valorRefV, valorRefF) {
+            // O AppSheet grava na coluna Ref o número serial do carimbo da loja (.v)
+            // Ex: valorRefV = 45953.69236... (número), valorRefF = "01/10/2025 11:27:05"
+            // Registros antigos têm o nome direto como texto em valorRefF
 
-            // Tenta extrair partes: data e hora
-            const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})$/);
-            if (!m) return str.toLowerCase();
+            if (!valorRefV && !valorRefF) return '';
 
-            let [, p1, p2, ano, h, min, seg] = m;
-            p1 = p1.padStart(2, '0');
-            p2 = p2.padStart(2, '0');
-            h  = h.padStart(2, '0');
+            const refF = String(valorRefF ?? '').trim();
+            const refV = Number(valorRefV);
 
-            return `${p1}/${p2}/${ano} ${h}:${min}:${seg}`;
-        }
-
-        async function resolverNomeLoja(valorRef) {
-            // valorRef pode ser:
-            // - já o nome legível (registros salvos antes da mudança para Ref)
-            // - carimbo formatado: "10/05/2025 15:50:15"
-            // - número serial do Google Sheets
-
-            if (!valorRef && valorRef !== 0) return '';
-
-            const refStr = String(valorRef).trim();
-
-            // Se não parece um carimbo (não contém / ou não é número puro),
-            // já é o nome — retorna direto
-            const pareceCarimbo = /^\d{1,2}\/\d{1,2}\/\d{4}/.test(refStr) || /^\d{5}\.?\d*$/.test(refStr);
-            if (!pareceCarimbo) {
-                console.log('🏪 Loja já é nome legível:', refStr);
-                return refStr;
+            // Se o valor formatado (.f) NÃO parece um carimbo de data,
+            // já é o nome legível — retorna direto (registros antigos)
+            const pareceData = /^\d{1,2}\/\d{1,2}\/\d{4}/.test(refF);
+            const pareceNumSerial = !isNaN(refV) && refV > 40000; // seriais de datas pós ~2010
+            if (!pareceData && !pareceNumSerial) {
+                console.log('🏪 Loja já é nome legível:', refF);
+                return refF;
             }
 
-            // É um carimbo — busca na tabela de lojas
-            console.log('🔗 Resolvendo Ref:', refStr);
+            // É um carimbo — busca na tabela de lojas pelo número serial (.v)
+            // Comparação numérica: elimina qualquer problema de formatação de string
+            console.log('🔗 Resolvendo Ref — serial:', refV, '| formatado:', refF);
             const rows = await carregarTabelaLojas();
 
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i].c;
                 if (!row || !row[LOJA_COL_CARIMBO]) continue;
 
-                const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
-                const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
+                const lojaV = Number(row[LOJA_COL_CARIMBO].v);
 
-                if (normalizar(celV) === normalizar(refStr) || normalizar(celF) === normalizar(refStr)) {
+                // Compara os números seriais — precisão total, sem problema de formato
+                if (!isNaN(lojaV) && !isNaN(refV) && Math.abs(lojaV - refV) < 0.00002) {
                     const nome = row[LOJA_COL_NOME]?.v || '';
                     console.log('✅ Loja resolvida:', nome);
                     return nome;
                 }
             }
 
-            console.warn('⚠️ Loja não encontrada para ref:', refStr);
-            return refStr; // último fallback: mostra o valor bruto
+            console.warn('⚠️ Loja não encontrada — serial:', refV, '| formatado:', refF);
+            return refF || String(valorRefV); // fallback: mostra o valor bruto
         }
 
         // ============================================
@@ -549,25 +532,28 @@
                     if (rowId === id) {
                         console.log('✅ Funcionário encontrado na linha', i + 1);
 
-                        // Valor bruto do campo Ref (carimbo ou nome legível)
-                        const lojaRef = row[COL_LOJA]?.f || row[COL_LOJA]?.v || '';
-                        console.log('🔗 Loja Ref bruto:', lojaRef);
+                        // Valor bruto do campo Ref — passa .v (serial) e .f (formatado)
+                        const lojaRef = await resolverNomeLoja(
+                            row[COL_LOJA]?.v,
+                            row[COL_LOJA]?.f || row[COL_LOJA]?.v
+                        );
 
-                        // Resolve para nome legível
-                        const nomeLoja = await resolverNomeLoja(lojaRef);
+                        const dataEmissaoVal  = row[COL_DATA_EMISSAO]?.f  || row[COL_DATA_EMISSAO]?.v  || '';
+                        const dataValidadeVal = row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || '';
+
+                        console.log('🏪 Loja resolvida:', lojaRef);
 
                         const dataEmissaoVal  = row[COL_DATA_EMISSAO]?.f  || row[COL_DATA_EMISSAO]?.v  || '';
                         const dataValidadeVal = row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || '';
 
                         console.log('👤 Nome:', row[COL_NOME]?.v);
-                        console.log('🏪 Loja resolvida:', nomeLoja);
                         console.log('📋 Status:', row[COL_STATUS]?.v);
                         console.log('📅 Emissão:', dataEmissaoVal);
                         console.log('📅 Validade:', dataValidadeVal);
 
                         return {
                             nome:         row[COL_NOME]?.v   || '',
-                            loja:         nomeLoja,
+                            loja:         lojaRef,
                             rg:           row[COL_RG]?.v     || '',
                             cpf:          row[COL_CPF]?.v    || '',
                             foto:         row[COL_FOTO]?.v   || '',
