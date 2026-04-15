@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carteirinha Digital - Atlântico Shopping</title>
-
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a5f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Carteirinha Atlântico">
+    <link rel="apple-touch-icon" href="logo_branco.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(145deg, #0d2540 0%, #1a3f6f 50%, #0d2540 100%);
@@ -18,7 +23,6 @@
             align-items: center;
             padding: 24px;
         }
-
         body::before {
             content: '';
             position: fixed;
@@ -28,425 +32,125 @@
                 radial-gradient(ellipse at 80% 80%, rgba(30,58,95,0.5) 0%, transparent 60%);
             pointer-events: none;
         }
-
-        /* LOADING */
         .loading {
-            background: white;
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            background: white; padding: 40px; border-radius: 24px;
+            text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.5);
             animation: fadeUp 0.5s ease both;
         }
         .loading h2 { color: #1e3a5f; margin-bottom: 20px; font-family: 'Montserrat', sans-serif; }
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #2c5f8d;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+            border: 4px solid #f3f3f3; border-top: 4px solid #2c5f8d;
+            border-radius: 50%; width: 40px; height: 40px;
+            animation: spin 1s linear infinite; margin: 0 auto;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* ERRO */
+        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
         .erro {
-            background: white;
-            padding: 40px;
-            border-radius: 24px;
-            text-align: center;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-            display: none;
-            animation: fadeUp 0.5s ease both;
+            background: white; padding: 40px; border-radius: 24px;
+            text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            display: none; animation: fadeUp 0.5s ease both;
         }
         .erro h1 { color: #dc3545; margin-bottom: 20px; font-family: 'Montserrat', sans-serif; }
-        .erro p { color: #666; font-size: 16px; }
-
+        .erro p  { color: #666; font-size: 16px; }
         .carteirinha {
-            background: #ffffff;
-            width: 360px;
-            border-radius: 24px;
-            overflow: hidden;
+            background: #ffffff; width: 360px; border-radius: 24px; overflow: hidden;
             box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
-            position: relative;
-            z-index: 10;
-            animation: fadeUp 0.5s ease both;
-            display: none;
+            position: relative; z-index: 10; animation: fadeUp 0.5s ease both; display: none;
         }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         .carteirinha::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
             background-image: url('logo_branco.png');
-            background-position: center 40%;
-            background-size: 180px;
-            background-repeat: no-repeat;
-            opacity: 0.04;
-            pointer-events: none;
-            z-index: 1;
+            background-position: center 40%; background-size: 180px;
+            background-repeat: no-repeat; opacity: 0.04; pointer-events: none; z-index: 1;
         }
-
-        /* ── HEADER ── */
         .header {
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
-            padding: 0 20px;
-            height: 110px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            position: relative;
-            z-index: 5;
+            padding: 0 20px; height: 110px;
+            display: flex; align-items: center; justify-content: flex-start;
+            position: relative; z-index: 5;
         }
-
         .header::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0; right: 0;
-            height: 12px;
+            content: ''; position: absolute; bottom:-12px; left:0; right:0; height:12px;
             background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
             clip-path: ellipse(55% 100% at 50% 0%);
         }
-
         .logo-header {
-            height: 83px;
-            width: auto;
-            object-fit: contain;
-            object-position: left center;
-            display: block;
+            height: 83px; width: auto; object-fit: contain;
+            object-position: left center; display: block;
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
         }
-
-        /* ── FOTO ── */
-        .foto-wrap {
-            display: flex;
-            justify-content: center;
-            margin-top: 24px;
-            position: relative;
-            z-index: 5;
-        }
-
+        .foto-wrap { display:flex; justify-content:center; margin-top:24px; position:relative; z-index:5; }
         .foto {
-            width: 160px;
-            height: 195px;
-            border-radius: 14px;
-            border: 4px solid #2c5f8d;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.22);
-            background: #f0f4f8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width:160px; height:195px; border-radius:14px; border:4px solid #2c5f8d;
+            overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.22);
+            background:#f0f4f8; display:flex; align-items:center; justify-content:center;
         }
-
-        .foto img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
-            display: none;
-        }
-
-        .foto-placeholder {
-            text-align: center;
-            color: #aab5c3;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        /* ── INFO ── */
-        .info {
-            padding: 20px 22px 0;
-            position: relative;
-            z-index: 5;
-        }
-
+        .foto img { width:100%; height:100%; object-fit:cover; object-position:center top; display:none; }
+        .foto-placeholder { text-align:center; color:#aab5c3; font-size:13px; line-height:1.6; }
+        .info { padding: 20px 22px 0; position: relative; z-index: 5; }
         .nome {
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 19px;
-            font-weight: 900;
-            color: #1e3a5f;
-            margin-bottom: 18px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.25;
+            text-align:center; font-family:'Montserrat',sans-serif; font-size:19px;
+            font-weight:900; color:#1e3a5f; margin-bottom:18px; text-transform:uppercase;
+            letter-spacing:0.5px; line-height:1.25;
         }
-
         .row { margin-bottom: 12px; }
-
-        .label {
-            font-size: 10px;
-            color: #8a96a8;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-
-        .value {
-            font-size: 15px;
-            color: #1e3a5f;
-            font-weight: 600;
-            background: #f0f7ff;
-            padding: 9px 14px;
-            border-radius: 10px;
-            border-left: 4px solid #2c5f8d;
-        }
-
-        /* ── QR ── */
-        .qr-section {
-            margin: 18px 22px 0;
-            padding: 16px;
-            background: linear-gradient(135deg, #f8f9fb 0%, #eef2f7 100%);
-            border-radius: 14px;
-            text-align: center;
-        }
-
-        .qr-label {
-            font-size: 11px;
-            color: #8a96a8;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .qr-code {
-            width: 130px;
-            height: 130px;
-            background: white;
-            padding: 7px;
-            border-radius: 12px;
-            border: 3px solid #2c5f8d;
-            margin: 0 auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .qr-code img { width: 100%; height: 100%; }
-
-        .qr-instruction {
-            font-size: 12px;
-            color: #5a7a99;
-            margin-top: 10px;
-            font-weight: 500;
-        }
-
-        /* ── VALIDADE — temporária ainda válida ── */
+        .label { font-size:10px; color:#8a96a8; text-transform:uppercase; letter-spacing:0.8px; font-weight:600; margin-bottom:3px; }
+        .value { font-size:15px; color:#1e3a5f; font-weight:600; background:#f0f7ff; padding:9px 14px; border-radius:10px; border-left:4px solid #2c5f8d; }
+        .qr-section { margin:18px 22px 0; padding:16px; background:linear-gradient(135deg,#f8f9fb 0%,#eef2f7 100%); border-radius:14px; text-align:center; }
+        .qr-label { font-size:11px; color:#8a96a8; text-transform:uppercase; letter-spacing:0.8px; font-weight:600; margin-bottom:10px; }
+        .qr-code { width:130px; height:130px; background:white; padding:7px; border-radius:12px; border:3px solid #2c5f8d; margin:0 auto; box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+        .qr-code img { width:100%; height:100%; }
+        .qr-instruction { font-size:12px; color:#5a7a99; margin-top:10px; font-weight:500; }
         .validade-bar {
-            display: none;
-            margin: 18px 22px 0;
-            background: linear-gradient(135deg, #f0fff6 0%, #dcffe8 100%);
-            border: 2px solid #00a050;
-            border-radius: 14px;
-            padding: 14px 18px;
-            position: relative;
-            z-index: 5;
-            overflow: hidden;
+            display:none; margin:18px 22px 0;
+            background:linear-gradient(135deg,#f0fff6 0%,#dcffe8 100%);
+            border:2px solid #00a050; border-radius:14px; padding:14px 18px;
+            position:relative; z-index:5; overflow:hidden;
         }
-
-        .validade-bar::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 5px;
-            background: #00a050;
-        }
-
-        .validade-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .validade-texto { flex: 1; }
-
-        .validade-titulo {
-            font-size: 10px;
-            color: #00a050;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 700;
-            margin-bottom: 3px;
-        }
-
-        .validade-data {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            color: #00a050;
-            letter-spacing: 0.5px;
-            line-height: 1;
-        }
-
-        .emissao-info {
-            font-size: 10px;
-            color: #50b080;
-            margin-top: 5px;
-            font-weight: 500;
-        }
-
-        .validade-icone {
-            font-size: 28px;
-            margin-left: 12px;
-            opacity: 0.85;
-        }
-
-        /* ══════════════════════════════════
-           TELAS DE BLOQUEIO
-        ══════════════════════════════════ */
+        .validade-bar::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:#00a050; }
+        .validade-inner { display:flex; align-items:center; justify-content:space-between; }
+        .validade-texto { flex:1; }
+        .validade-titulo { font-size:10px; color:#00a050; text-transform:uppercase; letter-spacing:0.8px; font-weight:700; margin-bottom:3px; }
+        .validade-data { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:900; color:#00a050; letter-spacing:0.5px; line-height:1; }
+        .emissao-info { font-size:10px; color:#50b080; margin-top:5px; font-weight:500; }
+        .validade-icone { font-size:28px; margin-left:12px; opacity:0.85; }
         .tela-bloqueio {
-            display: none;
-            position: absolute;
-            inset: 0;
-            z-index: 100;
-            background: rgba(255,255,255,0.98);
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 24px;
-            text-align: center;
-            border-radius: 24px;
+            display:none; position:absolute; inset:0; z-index:100;
+            background:rgba(255,255,255,0.98); flex-direction:column;
+            align-items:center; justify-content:center;
+            padding:32px 24px; text-align:center; border-radius:24px;
         }
-
-        .tela-bloqueio.ativo { display: flex; }
-
-        .bloqueio-icone {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            border: 3px solid;
-        }
-
-        .bloqueio-icone svg { width: 46px; height: 46px; }
-
-        .bloqueio-titulo {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .bloqueio-divider {
-            width: 50px; height: 3px;
-            border-radius: 2px;
-            margin: 0 auto 18px;
-            opacity: 0.35;
-        }
-
-        .bloqueio-subtitulo {
-            font-size: 13.5px;
-            color: #666;
-            font-weight: 500;
-            line-height: 1.65;
-            margin-bottom: 22px;
-            max-width: 260px;
-        }
-
-        .bloqueio-nome {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 15px;
-            font-weight: 800;
-            color: #1e3a5f;
-            text-transform: uppercase;
-            background: #f0f4f8;
-            padding: 10px 18px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-            text-align: left;
-        }
-
-        .bloqueio-data {
-            font-size: 11.5px;
-            color: #aaa;
-            font-weight: 500;
-            margin-bottom: 26px;
-        }
-
-        .bloqueio-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            color: white;
-            padding: 9px 22px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-        }
-
-        /* CANCELADA — vermelho */
-        #tela-cancelada .bloqueio-icone {
-            background: #fff0f0;
-            border-color: #CC0000;
-            animation: pulseRed 1.8s ease-in-out infinite;
-        }
-        #tela-cancelada .bloqueio-titulo  { color: #CC0000; }
-        #tela-cancelada .bloqueio-divider { background: #CC0000; }
-        #tela-cancelada .bloqueio-nome    { border-left: 4px solid #CC0000; }
-        #tela-cancelada .bloqueio-badge   { background: #CC0000; }
-
-        @keyframes pulseRed {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.3); }
-            50%       { box-shadow: 0 0 0 16px rgba(204,0,0,0); }
-        }
-
-        /* VENCIDA — laranja */
-        #tela-vencida .bloqueio-icone {
-            background: #fff7f0;
-            border-color: #E07000;
-            animation: pulseOrange 1.8s ease-in-out infinite;
-        }
-        #tela-vencida .bloqueio-titulo  { color: #E07000; }
-        #tela-vencida .bloqueio-divider { background: #E07000; }
-        #tela-vencida .bloqueio-nome    { border-left: 4px solid #E07000; }
-        #tela-vencida .bloqueio-badge   { background: #E07000; }
-
-        @keyframes pulseOrange {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(224,112,0,0.3); }
-            50%       { box-shadow: 0 0 0 16px rgba(224,112,0,0); }
-        }
-
-        /* ── FOOTER ── */
-        .footer {
-            background: linear-gradient(135deg, #1e3a5f 0%, #2c5f8d 100%);
-            padding: 14px;
-            text-align: center;
-            color: rgba(255,255,255,0.75);
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            margin-top: 20px;
-            position: relative;
-            z-index: 5;
-        }
+        .tela-bloqueio.ativo { display:flex; }
+        .bloqueio-icone { width:90px; height:90px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:20px; border:3px solid; }
+        .bloqueio-icone svg { width:46px; height:46px; }
+        .bloqueio-titulo { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:900; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+        .bloqueio-divider { width:50px; height:3px; border-radius:2px; margin:0 auto 18px; opacity:0.35; }
+        .bloqueio-subtitulo { font-size:13.5px; color:#666; font-weight:500; line-height:1.65; margin-bottom:22px; max-width:260px; }
+        .bloqueio-nome { font-family:'Montserrat',sans-serif; font-size:15px; font-weight:800; color:#1e3a5f; text-transform:uppercase; background:#f0f4f8; padding:10px 18px; border-radius:10px; margin-bottom:10px; width:100%; text-align:left; }
+        .bloqueio-data { font-size:11.5px; color:#aaa; font-weight:500; margin-bottom:26px; }
+        .bloqueio-badge { display:inline-flex; align-items:center; gap:7px; color:white; padding:9px 22px; border-radius:50px; font-size:12px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; }
+        #tela-cancelada .bloqueio-icone  { background:#fff0f0; border-color:#CC0000; animation:pulseRed 1.8s ease-in-out infinite; }
+        #tela-cancelada .bloqueio-titulo  { color:#CC0000; }
+        #tela-cancelada .bloqueio-divider { background:#CC0000; }
+        #tela-cancelada .bloqueio-nome    { border-left:4px solid #CC0000; }
+        #tela-cancelada .bloqueio-badge   { background:#CC0000; }
+        @keyframes pulseRed { 0%,100%{box-shadow:0 0 0 0 rgba(204,0,0,0.3)} 50%{box-shadow:0 0 0 16px rgba(204,0,0,0)} }
+        #tela-vencida .bloqueio-icone  { background:#fff7f0; border-color:#E07000; animation:pulseOrange 1.8s ease-in-out infinite; }
+        #tela-vencida .bloqueio-titulo  { color:#E07000; }
+        #tela-vencida .bloqueio-divider { background:#E07000; }
+        #tela-vencida .bloqueio-nome    { border-left:4px solid #E07000; }
+        #tela-vencida .bloqueio-badge   { background:#E07000; }
+        @keyframes pulseOrange { 0%,100%{box-shadow:0 0 0 0 rgba(224,112,0,0.3)} 50%{box-shadow:0 0 0 16px rgba(224,112,0,0)} }
+        .footer { background:linear-gradient(135deg,#1e3a5f 0%,#2c5f8d 100%); padding:14px; text-align:center; color:rgba(255,255,255,0.75); font-size:11px; letter-spacing:0.5px; margin-top:20px; position:relative; z-index:5; }
     </style>
 </head>
 <body>
-    <!-- LOADING -->
+
     <div class="loading" id="loading">
         <h2>Carregando carteirinha...</h2>
         <div class="spinner"></div>
     </div>
 
-    <!-- ERRO -->
     <div class="erro" id="erro">
         <h1>❌ Erro</h1>
         <p id="erro-msg">Não foi possível carregar a carteirinha</p>
@@ -454,62 +158,46 @@
 
     <div class="carteirinha" id="carteirinha">
 
-        <!-- ══ TELA CANCELADA (vermelha) ══ -->
         <div id="tela-cancelada" class="tela-bloqueio">
             <div class="bloqueio-icone">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#CC0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="15" y1="9" x2="9" y2="15"/>
-                    <line x1="9" y1="9" x2="15" y2="15"/>
+                    <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
                 </svg>
             </div>
             <div class="bloqueio-titulo">Carteirinha Cancelada</div>
             <div class="bloqueio-divider"></div>
-            <div class="bloqueio-subtitulo">
-                Este funcionário não está mais vinculado ao Atlântico Shopping.<br>O acesso foi revogado.
-            </div>
+            <div class="bloqueio-subtitulo">Este funcionário não está mais vinculado ao Atlântico Shopping.<br>O acesso foi revogado.</div>
             <div class="bloqueio-nome" id="cancel-nome">—</div>
             <div class="bloqueio-data" id="cancel-data"></div>
             <div class="bloqueio-badge">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 6L6 18M6 6l12 12"/>
-                </svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 Acesso Negado
             </div>
         </div>
 
-        <!-- ══ TELA VENCIDA (laranja) ══ -->
         <div id="tela-vencida" class="tela-bloqueio">
             <div class="bloqueio-icone">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#E07000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
             </div>
             <div class="bloqueio-titulo">Carteirinha Vencida</div>
             <div class="bloqueio-divider"></div>
-            <div class="bloqueio-subtitulo">
-                O prazo de validade desta carteirinha expirou.<br>Entre em contato com a administração para renovação.
-            </div>
+            <div class="bloqueio-subtitulo">O prazo de validade desta carteirinha expirou.<br>Entre em contato com a administração para renovação.</div>
             <div class="bloqueio-nome" id="vencida-nome">—</div>
             <div class="bloqueio-data" id="vencida-data"></div>
             <div class="bloqueio-badge">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
                 Prazo Expirado
             </div>
         </div>
 
-        <!-- HEADER -->
         <div class="header">
             <img src="logo_branco.png" class="logo-header" alt="Atlântico Shopping">
         </div>
 
-        <!-- FOTO -->
         <div class="foto-wrap">
             <div class="foto" id="foto-container">
                 <img id="foto" alt="Foto do Funcionário">
@@ -517,35 +205,25 @@
             </div>
         </div>
 
-        <!-- DADOS -->
         <div class="info">
             <div class="nome" id="nome">NOME DO FUNCIONÁRIO</div>
-
             <div class="row">
                 <div class="label">Loja</div>
                 <div class="value" id="loja">Nome da Loja</div>
             </div>
-
             <div class="row">
                 <div class="label">Função</div>
                 <div class="value" id="funcao">Funcionário</div>
             </div>
-
             <div class="row" id="row-documento" style="display:none">
                 <div class="label" id="label-doc">Documento</div>
                 <div class="value" id="val-doc">—</div>
             </div>
-
-            <!-- QR CODE -->
             <div class="qr-section">
                 <div class="qr-label">🔍 QR Code de Validação</div>
-                <div class="qr-code">
-                    <img id="qrcode" src="" alt="QR Code">
-                </div>
+                <div class="qr-code"><img id="qrcode" src="" alt="QR Code"></div>
                 <div class="qr-instruction">Apresente este código ao segurança</div>
             </div>
-
-            <!-- VALIDADE (verde = ainda válida) -->
             <div class="validade-bar" id="validade-bar">
                 <div class="validade-inner">
                     <div class="validade-texto">
@@ -568,316 +246,297 @@
         // ============================================
         // CONFIGURAÇÃO
         // ============================================
-        const SHEET_ID = '1BGAp5Kix1FewHezF1A-9yTiaO1sX83y62Yd7npoxNzI';
+        const SHEET_ID   = '1BGAp5Kix1FewHezF1A-9yTiaO1sX83y62Yd7npoxNzI';
         const SHEET_NAME = 'Carteirinhas para imprimir';
-        const RANGE = 'A:P';  // Inclui até coluna P
-        
-        // MAPEAMENTO DAS COLUNAS
-        const COL_ID = 13;              // Coluna N - ID
-        const COL_NOME = 4;             // Coluna E - Nome completo funcionário
-        const COL_LOJA = 2;             // Coluna C - Nome da LOJA
-        const COL_RG = 5;               // Coluna F - Documento RG
-        const COL_CPF = 7;              // Coluna H - Documento CPF
-        const COL_FOTO = 8;             // Coluna I - Insira uma Foto...
-        const COL_STATUS = 6;           // Coluna G - Status
-        const COL_FUNCAO = 10;          // Coluna K - Função
-        const COL_DATA_EMISSAO = 14;    // Coluna O - Data de Emissão
-        const COL_DATA_VALIDADE = 15;   // Coluna P - Data_Validade
-        
+        const RANGE      = 'A:P';
+
+        const LOJAS_SHEET_ID   = '1TxA0_FRvPdoJlEuksf46jJ-Cxx2AlwHPd27iKpT_Ci8';
+        const LOJAS_SHEET_NAME = 'Cadastro lojas';
+        const LOJAS_RANGE      = 'A:C';
+
         // ============================================
-        // FUNÇÕES
+        // MAPEAMENTO DE COLUNAS (A=0, B=1, C=2 ...)
         // ============================================
-        
+        const COL_LOJA          = 2;   // C - Nome da LOJA (Ref → grava serial numérico)
+        const COL_NOME          = 4;   // E - Nome completo funcionário
+        const COL_RG            = 5;   // F - Documento RG
+        const COL_STATUS        = 6;   // G - Status
+        const COL_CPF           = 7;   // H - Documento CPF
+        const COL_FOTO          = 8;   // I - Foto
+        const COL_FUNCAO        = 10;  // K - Função
+        const COL_ID            = 13;  // N - ID
+        const COL_DATA_EMISSAO  = 14;  // O - Data de Emissão
+        const COL_DATA_VALIDADE = 15;  // P - Data_Validade
+
+        // Cadastro de Lojas
+        const LOJA_COL_CARIMBO = 0;   // A - Carimbo (chave Ref — número serial)
+        const LOJA_COL_NOME    = 2;   // C - Nome da Loja
+
+        // Cache da tabela de lojas
+        let cacheLojas = null;
+
+        // ============================================
+        // UTILITÁRIOS
+        // ============================================
         function getUrlParameter(name) {
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
             const results = regex.exec(location.search);
             return results ? decodeURIComponent(results[1].replace(/\+/g, ' ')) : null;
         }
-        
-        function mostrarErro(mensagem) {
+
+        function mostrarErro(msg) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('erro').style.display = 'block';
-            document.getElementById('erro-msg').textContent = mensagem;
+            document.getElementById('erro-msg').textContent = msg;
         }
-        
-        function formatarData(valor) {
-            if (!valor) return '';
-            if (typeof valor === 'string' && valor.includes('/')) return valor;
-            const data = new Date(valor);
-            if (isNaN(data.getTime())) return '';
-            return data.toLocaleDateString('pt-BR');
+
+        function formatarData(v) {
+            if (!v) return '';
+            if (typeof v === 'string' && v.includes('/')) return v;
+            const d = new Date(v);
+            return isNaN(d.getTime()) ? '' : d.toLocaleDateString('pt-BR');
         }
-        
-        // Calcula data de validade baseada em emissão + prazo
-        function calcularDataValidade(dataEmissaoStr, prazoTexto) {
-            if (!dataEmissaoStr || !prazoTexto) return '';
-            
-            // Parse da data de emissão (formato: DD/MM/AAAA ou objeto Date)
-            let dataEmissao;
-            if (typeof dataEmissaoStr === 'string' && dataEmissaoStr.includes('/')) {
-                const partes = dataEmissaoStr.split('/');
-                dataEmissao = new Date(partes[2], partes[1] - 1, partes[0]);
-            } else {
-                dataEmissao = new Date(dataEmissaoStr);
-            }
-            
-            if (isNaN(dataEmissao.getTime())) return '';
-            
-            // Interpreta o prazo
-            const prazo = prazoTexto.toLowerCase().trim();
-            let dataValidade = new Date(dataEmissao);
-            
-            // Dias
-            if (prazo.includes('15 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 15);
-            } else if (prazo.includes('30 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 30);
-            } else if (prazo.includes('60 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 60);
-            } else if (prazo.includes('90 dias')) {
-                dataValidade.setDate(dataValidade.getDate() + 90);
-            }
-            // Anos
-            else if (prazo.includes('1 ano') || prazo.includes('um ano')) {
-                dataValidade.setFullYear(dataValidade.getFullYear() + 1);
-            } else if (prazo.includes('2 anos') || prazo.includes('dois anos')) {
-                dataValidade.setFullYear(dataValidade.getFullYear() + 2);
-            }
-            // Meses
-            else if (prazo.includes('3 meses') || prazo.includes('três meses')) {
-                dataValidade.setMonth(dataValidade.getMonth() + 3);
-            } else if (prazo.includes('6 meses') || prazo.includes('seis meses')) {
-                dataValidade.setMonth(dataValidade.getMonth() + 6);
-            }
-            // Default: 1 ano
-            else {
-                dataValidade.setFullYear(dataValidade.getFullYear() + 1);
-            }
-            
-            return dataValidade.toLocaleDateString('pt-BR');
-        }
-        
+
         function parseDateBR(str) {
-            if (!str || str.trim() === '') return null;
-            var p = str.trim().split('/');
+            if (!str) return null;
+            const p = str.trim().split('/');
             if (p.length !== 3) return null;
-            var dt = new Date(parseInt(p[2],10), parseInt(p[1],10)-1, parseInt(p[0],10));
-            return isNaN(dt.getTime()) ? null : dt;
+            const d = new Date(+p[2], +p[1]-1, +p[0]);
+            return isNaN(d.getTime()) ? null : d;
         }
-        
-        function isVencida(dataStr) {
-            var dt = parseDateBR(dataStr);
-            if (!dt) return false;
-            var hoje = new Date();
-            hoje.setHours(0,0,0,0);
-            return dt < hoje;
+
+        function isVencida(str) {
+            const d = parseDateBR(str);
+            if (!d) return false;
+            const hoje = new Date(); hoje.setHours(0,0,0,0);
+            return d < hoje;
         }
-        
-        function processarUrlFoto(fotoParam) {
-            if (!fotoParam || fotoParam.trim() === '') return null;
-            var url = fotoParam.trim();
-            try { var obj = JSON.parse(url); if (obj.Url) url = obj.Url.trim(); } catch(e) {}
-            if (url.includes('drive.google.com/uc') && url.includes('export=view')) {
-                var id = url.match(/id=([^&]+)/);
-                if (id) return montarUrlsAlternativas(id[1]);
-            }
-            var match = url.match(/\/file\/d\/([^\/\?&]+)/);
-            if (match) return montarUrlsAlternativas(match[1]);
-            var matchOpen = url.match(/[?&]id=([^&]+)/);
-            if (matchOpen) return montarUrlsAlternativas(matchOpen[1]);
-            if (!url.startsWith('http') && url.length > 10) return montarUrlsAlternativas(url);
+
+        function processarUrlFoto(f) {
+            if (!f || !f.trim()) return null;
+            let url = f.trim();
+            try { const o = JSON.parse(url); if (o.Url) url = o.Url.trim(); } catch(e){}
+            const m1 = url.match(/id=([^&]+)/);
+            if (url.includes('drive.google.com/uc') && m1) return urlsDrive(m1[1]);
+            const m2 = url.match(/\/file\/d\/([^\/\?&]+)/);
+            if (m2) return urlsDrive(m2[1]);
+            const m3 = url.match(/[?&]id=([^&]+)/);
+            if (m3) return urlsDrive(m3[1]);
+            if (!url.startsWith('http') && url.length > 10) return urlsDrive(url);
             if (url.startsWith('http')) return [url];
             return null;
         }
-        
-        function montarUrlsAlternativas(id) {
+
+        function urlsDrive(id) {
             return [
                 'https://drive.google.com/thumbnail?id=' + id + '&sz=w400',
                 'https://lh3.googleusercontent.com/d/' + id,
                 'https://drive.google.com/uc?export=view&id=' + id,
             ];
         }
-        
-        function tentarCarregarFoto(urls, index) {
-            if (!urls || index >= urls.length) {
+
+        function tentarFoto(urls, i) {
+            if (!urls || i >= urls.length) {
                 document.getElementById('foto-placeholder').style.display = 'flex';
                 document.getElementById('foto').style.display = 'none';
                 return;
             }
-            var img = document.getElementById('foto');
-            img.onload = function() {
-                img.style.display = 'block';
-                document.getElementById('foto-placeholder').style.display = 'none';
-            };
-            img.onerror = function() { tentarCarregarFoto(urls, index + 1); };
-            img.src = urls[index];
+            const img = document.getElementById('foto');
+            img.onload  = () => { img.style.display='block'; document.getElementById('foto-placeholder').style.display='none'; };
+            img.onerror = () => tentarFoto(urls, i+1);
+            img.src = urls[i];
         }
-        
-        async function buscarDadosSheets(id) {
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
-            
+
+        // ============================================
+        // CARREGA TABELA DE LOJAS (com cache)
+        // ============================================
+        async function carregarLojas() {
+            if (cacheLojas) return cacheLojas;
+            const url = `https://docs.google.com/spreadsheets/d/${LOJAS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(LOJAS_SHEET_NAME)}&range=${LOJAS_RANGE}`;
             try {
-                console.log('🔍 Buscando dados do Google Sheets...');
-                const response = await fetch(url);
-                const text = await response.text();
-                
-                const json = JSON.parse(text.substr(47).slice(0, -2));
-                const rows = json.table.rows;
-                
-                console.log(`📊 ${rows.length} linhas encontradas`);
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i].c;
-                    const rowId = row[COL_ID]?.v?.toString();
-                    
-                    if (rowId === id) {
-                        console.log('✅ Funcionário encontrado!');
-                        
-                        // DEBUG: Ver valores brutos das datas
-                        console.log('🔍 DEBUG Data Emissão RAW:', row[COL_DATA_EMISSAO]);
-                        console.log('🔍 DEBUG Data Validade RAW:', row[COL_DATA_VALIDADE]);
-                        
-                        // Extrai valores das datas (podem vir como objeto com .v ou .f)
-                        const dataEmissaoVal = row[COL_DATA_EMISSAO]?.f || row[COL_DATA_EMISSAO]?.v || '';
-                        const dataValidadeVal = row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || '';
-                        
-                        console.log('📅 DEBUG Emissão extraída:', dataEmissaoVal);
-                        console.log('📅 DEBUG Validade extraída:', dataValidadeVal);
-                        
-                        return {
-                            nome: row[COL_NOME]?.v || '',
-                            loja: row[COL_LOJA]?.v || '',
-                            rg: row[COL_RG]?.v || '',
-                            cpf: row[COL_CPF]?.v || '',
-                            foto: row[COL_FOTO]?.v || '',
-                            status: row[COL_STATUS]?.v || '',
-                            funcao: row[COL_FUNCAO]?.v || 'Funcionário',
-                            dataEmissao: dataEmissaoVal,
-                            dataValidade: dataValidadeVal
-                        };
-                    }
-                }
-                
-                return null;
-            } catch (error) {
-                console.error('❌ Erro ao buscar dados:', error);
-                throw error;
+                const r = await fetch(url);
+                const t = await r.text();
+                const j = JSON.parse(t.substr(47).slice(0,-2));
+                cacheLojas = j.table.rows;
+                console.log('🏪 Lojas carregadas:', cacheLojas.length);
+                return cacheLojas;
+            } catch(e) {
+                console.error('❌ Erro lojas:', e);
+                return [];
             }
         }
-        
-        function exibirCarteirinha(dados, id) {
-            const emissao = formatarData(dados.dataEmissao);
-            const validade = formatarData(dados.dataValidade);
-            const status = dados.status.trim();
-            
-            console.log('📋 Status:', status);
-            console.log('📅 Emissão:', emissao);
-            console.log('📅 Validade:', validade);
-            
-            // CANCELADA/ARQUIVADA/INVÁLIDA
-            if (status === 'Cancelada' || status === 'Arquivada' || status === 'Inválida') {
-                document.getElementById('tela-cancelada').classList.add('ativo');
-                if (dados.nome) document.getElementById('cancel-nome').textContent = dados.nome.toUpperCase();
-                if (emissao) document.getElementById('cancel-data').textContent = 'Carteirinha emitida em ' + emissao;
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('carteirinha').style.display = 'block';
-                return;
+
+        // ============================================
+        // RESOLVE NOME DA LOJA A PARTIR DO VALOR REF
+        //
+        // O AppSheet grava na célula o número serial do
+        // carimbo da loja (ex: 45953.6923...).
+        // Comparamos os seriais numericamente — precisão
+        // total, sem risco de diferença de formatação.
+        //
+        // Registros antigos (antes da mudança para Ref)
+        // têm o nome textual direto na célula — esses
+        // são detectados pela ausência de serial numérico.
+        // ============================================
+        async function resolverLoja(celV, celF) {
+            // celV = valor numérico (.v), celF = valor formatado (.f)
+            const serial = parseFloat(celV);
+
+            // Se não é um número serial de data (> 40000 ≈ ano 2009),
+            // o valor já é o nome legível — retorna direto
+            if (isNaN(serial) || serial < 40000) {
+                const nome = String(celF ?? celV ?? '').trim();
+                console.log('🏪 Nome direto:', nome);
+                return nome;
             }
-            
-            // VENCIDA
-            if (validade && validade.trim() !== '' && isVencida(validade)) {
-                document.getElementById('tela-vencida').classList.add('ativo');
-                if (dados.nome) document.getElementById('vencida-nome').textContent = dados.nome.toUpperCase();
-                if (validade) document.getElementById('vencida-data').textContent = 'Vencida em ' + validade;
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('carteirinha').style.display = 'block';
-                return;
-            }
-            
-            // ATIVA
-            if (dados.nome) document.getElementById('nome').textContent = dados.nome.toUpperCase();
-            if (dados.loja) document.getElementById('loja').textContent = dados.loja;
-            if (dados.funcao) document.getElementById('funcao').textContent = dados.funcao;
-            
-            const rowDoc = document.getElementById('row-documento');
-            const labelDoc = document.getElementById('label-doc');
-            const valDoc = document.getElementById('val-doc');
-            
-            // Converte RG e CPF para string se necessário
-            const rg = dados.rg ? String(dados.rg).trim() : '';
-            const cpf = dados.cpf ? String(dados.cpf).trim() : '';
-            
-            if (rg && rg !== '') {
-                labelDoc.textContent = 'Documento (RG)';
-                valDoc.textContent = rg;
-                rowDoc.style.display = 'block';
-            } else if (cpf && cpf !== '') {
-                labelDoc.textContent = 'CPF';
-                valDoc.textContent = cpf;
-                rowDoc.style.display = 'block';
-            }
-            
-            const urls = processarUrlFoto(dados.foto);
-            if (urls && urls.length > 0) tentarCarregarFoto(urls, 0);
-            
-            // QR Code - reconstrói a URL manualmente para garantir que está limpa
-            const baseUrl = 'https://suporteoperacional-atl.github.io/carteirinha-digital/';
-            const urlLimpa = baseUrl + '?id=' + id;
-            
-            console.log('🔗 URL do QR Code:', urlLimpa);
-            
-            const qr = document.getElementById('qrcode');
-            qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(urlLimpa) + '&size=400';
-            qr.onerror = function() {
-                this.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(urlLimpa);
-            };
-            
-            // BARRA VERDE DE VALIDADE
-            if (validade && validade.trim() !== '') {
-                document.getElementById('validade-bar').style.display = 'block';
-                document.getElementById('validade-data').textContent = validade;
-                if (emissao && emissao.trim() !== '') {
-                    document.getElementById('emissao-info').textContent = 'Emitida em ' + emissao;
+
+            // É serial — busca na tabela de lojas
+            console.log('🔗 Buscando loja por serial:', serial);
+            const rows = await carregarLojas();
+
+            for (let i = 0; i < rows.length; i++) {
+                const r = rows[i].c;
+                if (!r || r[LOJA_COL_CARIMBO] == null) continue;
+                const lojaSerial = parseFloat(r[LOJA_COL_CARIMBO].v);
+                // Tolerância mínima: cobre apenas arredondamento de float
+                if (!isNaN(lojaSerial) && Math.abs(lojaSerial - serial) < 0.000012) {
+                    const nome = r[LOJA_COL_NOME]?.v || '';
+                    console.log('✅ Loja encontrada:', nome, '| serial:', lojaSerial);
+                    return nome;
                 }
             }
-            
-            document.getElementById('data-consulta').textContent = 
-                'Atualizado: ' + new Date().toLocaleString('pt-BR');
-            
-            document.getElementById('loading').style.display = 'none';
+
+            // Não encontrou — retorna o valor formatado como fallback
+            console.warn('⚠️ Loja não encontrada para serial:', serial);
+            return String(celF ?? celV ?? '');
+        }
+
+        // ============================================
+        // BUSCA DADOS DA CARTEIRINHA
+        // ============================================
+        async function buscarDados(id) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
+            const r = await fetch(url);
+            const t = await r.text();
+            const j = JSON.parse(t.substr(47).slice(0,-2));
+            const rows = j.table.rows;
+            console.log('📊 Linhas:', rows.length);
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i].c;
+                if (row[COL_ID]?.v?.toString() !== id) continue;
+
+                console.log('✅ Linha', i+1);
+
+                const loja = await resolverLoja(row[COL_LOJA]?.v, row[COL_LOJA]?.f);
+
+                return {
+                    nome:         row[COL_NOME]?.v    || '',
+                    loja:         loja,
+                    rg:           row[COL_RG]?.v      || '',
+                    cpf:          row[COL_CPF]?.v     || '',
+                    foto:         row[COL_FOTO]?.v    || '',
+                    status:       row[COL_STATUS]?.v  || '',
+                    funcao:       row[COL_FUNCAO]?.v  || 'Funcionário',
+                    dataEmissao:  row[COL_DATA_EMISSAO]?.f  || row[COL_DATA_EMISSAO]?.v  || '',
+                    dataValidade: row[COL_DATA_VALIDADE]?.f || row[COL_DATA_VALIDADE]?.v || ''
+                };
+            }
+            return null;
+        }
+
+        // ============================================
+        // RENDERIZA A CARTEIRINHA
+        // ============================================
+        function exibir(dados, id) {
+            const emissao  = formatarData(dados.dataEmissao);
+            const validade = formatarData(dados.dataValidade);
+            const status   = dados.status.trim();
+
+            console.log('📋 Status:', status, '| Loja:', dados.loja);
+
+            // CANCELADA / ARQUIVADA / INVÁLIDA
+            if (['Cancelada','Arquivada','Inválida'].includes(status)) {
+                document.getElementById('tela-cancelada').classList.add('ativo');
+                document.getElementById('cancel-nome').textContent = dados.nome.toUpperCase();
+                if (emissao) document.getElementById('cancel-data').textContent = 'Emitida em ' + emissao;
+                document.getElementById('loading').style.display    = 'none';
+                document.getElementById('carteirinha').style.display = 'block';
+                return;
+            }
+
+            // VENCIDA
+            if (validade && isVencida(validade)) {
+                document.getElementById('tela-vencida').classList.add('ativo');
+                document.getElementById('vencida-nome').textContent = dados.nome.toUpperCase();
+                document.getElementById('vencida-data').textContent = 'Vencida em ' + validade;
+                document.getElementById('loading').style.display    = 'none';
+                document.getElementById('carteirinha').style.display = 'block';
+                return;
+            }
+
+            // ATIVA
+            document.getElementById('nome').textContent   = dados.nome.toUpperCase();
+            document.getElementById('loja').textContent   = dados.loja;
+            document.getElementById('funcao').textContent = dados.funcao;
+
+            const rg  = String(dados.rg  ?? '').trim();
+            const cpf = String(dados.cpf ?? '').trim();
+            if (rg) {
+                document.getElementById('label-doc').textContent    = 'Documento (RG)';
+                document.getElementById('val-doc').textContent      = rg;
+                document.getElementById('row-documento').style.display = 'block';
+            } else if (cpf) {
+                document.getElementById('label-doc').textContent    = 'CPF';
+                document.getElementById('val-doc').textContent      = cpf;
+                document.getElementById('row-documento').style.display = 'block';
+            }
+
+            tentarFoto(processarUrlFoto(dados.foto), 0);
+
+            const baseUrl = 'https://suporteoperacional-atl.github.io/carteirinha-digital/';
+            const qrUrl   = baseUrl + '?id=' + id;
+            const qr = document.getElementById('qrcode');
+            qr.src = 'https://quickchart.io/qr?text=' + encodeURIComponent(qrUrl) + '&size=400';
+            qr.onerror = () => { qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(qrUrl); };
+
+            if (validade) {
+                document.getElementById('validade-bar').style.display = 'block';
+                document.getElementById('validade-data').textContent  = validade;
+                if (emissao) document.getElementById('emissao-info').textContent = 'Emitida em ' + emissao;
+            }
+
+            document.getElementById('data-consulta').textContent = 'Atualizado: ' + new Date().toLocaleString('pt-BR');
+            document.getElementById('loading').style.display    = 'none';
             document.getElementById('carteirinha').style.display = 'block';
         }
-        
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         window.onload = async function() {
             console.log('🎫 Carteirinha Digital - Atlântico Shopping');
-            
             const id = getUrlParameter('id');
-            
-            if (!id) {
-                mostrarErro('ID não fornecido na URL');
-                return;
-            }
-            
+            if (!id) { mostrarErro('ID não fornecido na URL'); return; }
             console.log('🆔 ID:', id);
-            
             try {
-                const dados = await buscarDadosSheets(id);
-                
-                if (!dados) {
-                    mostrarErro('Funcionário não encontrado');
-                    return;
-                }
-                
-                console.log('📦 Dados:', dados);
-                exibirCarteirinha(dados, id);
-                
-            } catch (error) {
-                console.error('💥 Erro:', error);
-                mostrarErro('Erro ao carregar dados. Verifique se a planilha está pública (Compartilhar → Qualquer pessoa → Leitor)');
+                const dados = await buscarDados(id);
+                if (!dados) { mostrarErro('Funcionário não encontrado'); return; }
+                exibir(dados, id);
+            } catch(e) {
+                console.error('💥', e);
+                mostrarErro('Erro ao carregar. Verifique se as planilhas estão públicas.');
             }
         };
+
+        // Service Worker (PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/carteirinha-digital/sw.js')
+                    .then(r => console.log('✅ SW:', r.scope))
+                    .catch(e => console.warn('⚠️ SW:', e));
+            });
+        }
     </script>
 </body>
 </html>
