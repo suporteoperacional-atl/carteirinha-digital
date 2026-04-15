@@ -490,7 +490,11 @@
                 const celV = String(row[LOJA_COL_CARIMBO].v ?? '').trim();
                 const celF = String(row[LOJA_COL_CARIMBO].f ?? '').trim();
 
-                if (celV === refStr || celF === refStr) {
+                // Compara exato ou sem segundos (AppSheet pode gravar com 1s de diferença)
+                const refSemSeg = refStr.substring(0, 15);   // "dd/mm/aaaa hh:m"
+                const celVSemSeg = celV.substring(0, 15);
+                const celFSemSeg = celF.substring(0, 15);
+                if (celV === refStr || celF === refStr || celVSemSeg === refSemSeg || celFSemSeg === refSemSeg) {
                     const nome = row[LOJA_COL_NOME]?.v || '';
                     console.log('✅ Loja resolvida:', nome);
                     return nome;
