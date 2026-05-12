@@ -426,17 +426,16 @@ function renderError(msg) {
 
 // ── BUSCA NO GOOGLE SHEETS VIA GVIZ ──
 async function loadBadge() {
-  const codigoParam = getParam('codigo');
-  const idParam     = getParam('id');
+  const idParam = getParam('id');
 
-  if (!codigoParam && !idParam) {
-    renderError('Parâmetro não informado.<br>Use: ?codigo=0010 ou ?id=37766aa4');
+  if (!idParam) {
+    renderError('Parâmetro não informado.<br>Use: ?id=37766aa4');
     return;
   }
 
-  // Monta query GViz
-  const col   = codigoParam ? CONFIG.COLS.codigo : CONFIG.COLS.id;
-  const valor = codigoParam || idParam;
+  // Monta query GViz — busca pelo ID único gerado pelo AppSheet
+  const col   = CONFIG.COLS.id;
+  const valor = idParam;
   const query = `SELECT * WHERE ${col} = '${valor}'`;
   const url   = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq`
               + `?sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`
