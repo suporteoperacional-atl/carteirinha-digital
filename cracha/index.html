@@ -270,7 +270,7 @@ const CONFIG = {
   SHEET_ID: '1-CP4pA1xv0aP73cadpnFxCS626JeOHs7-KYoho8VM8s',
 
   // Nome exato da aba (como aparece na aba inferior do Google Sheets)
-  SHEET_NAME: 'Arquivo_Funcion%C3%A1rios',
+  SHEET_NAME: 'Arquivo_Funcionários',
 
   // URL base do logo do Atlântico Shopping (pode ser data:image/... ou https://...)
   // Se deixar vazio, mostra texto "ATLÂNTICO SHOPPING"
@@ -435,18 +435,22 @@ async function loadBadge() {
 
   // Monta query GViz — busca pelo ID único (coluna A)
   const query = `SELECT * WHERE A = '${idParam}'`;
-  const url   = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq`
-              + `?sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`
-              + `&tq=${encodeURIComponent(query)}`
-              + `&tqx=out:json`;
+  const sheetEncoded = CONFIG.SHEET_NAME.normalize('NFC');
+  const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq`
+            + `?sheet=${encodeURIComponent(sheetEncoded)}`
+            + `&tq=${encodeURIComponent(query)}`
+            + `&tqx=out:json`;
 
+  console.log('GViz URL:', url);
   try {
     const res  = await fetch(url);
     const text = await res.text();
+    console.log('GViz raw response (first 300):', text.substring(0, 300));
 
     // gviz retorna JSONP: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
-    const json = JSON.parse(text.replace(/^[^{]+/, '').replace(/\);?\s*$/, ''));
+    const json = JSON.parse(text.match(/\{[\s\S]*\}/)[0]);
 
+    console.log('Rows found:', json.table?.rows?.length ?? 0);
     if (!json.table || !json.table.rows || json.table.rows.length === 0) {
       renderError('Funcionário não encontrado.');
       return;
