@@ -25,6 +25,7 @@ body{background:#111827;min-height:100vh;display:flex;align-items:center;justify
 .c .ring{background:linear-gradient(135deg,#2563eb,#93c5fd)}
 .d .ring{background:linear-gradient(135deg,#dc2626,#fca5a5)}
 .inner{width:100%;height:100%;border-radius:50%;background:#f3f4f6;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.inner img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .initials{font-family:'Montserrat',sans-serif;font-weight:800;font-size:26px;color:#374151}
 .pill{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff;padding:3px 10px;border-radius:20px;white-space:nowrap;border:2px solid #fff}
 .t .pill{background:#16a34a}.c .pill{background:#2563eb}.d .pill{background:#dc2626}
@@ -35,9 +36,12 @@ body{background:#111827;min-height:100vh;display:flex;align-items:center;justify
 .meta{flex:1;background:#f9fafb;border-radius:10px;padding:8px 10px;text-align:center}
 .mlabel{font-size:8.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#9ca3af;margin-bottom:2px}
 .mval{font-family:'Montserrat',sans-serif;font-size:11.5px;font-weight:700;color:#1f2937}
-.ftr{background:#0c0c0c;padding:14px 22px;display:flex;align-items:center;justify-content:space-between}
+.ftr{background:#0c0c0c;padding:14px 22px;display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
 .cod-label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4)}
 .cod-val{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;color:#c9a84c;letter-spacing:1px}
+.doc-item{display:flex;flex-direction:column;align-items:flex-end}
+.doc-label{font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.doc-val{font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.5px}
 .slabel{font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;padding:4px 14px;border-radius:20px}
 .t .slabel{color:#16a34a;background:rgba(22,163,74,.12)}
 .c .slabel{color:#2563eb;background:rgba(37,99,235,.12)}
@@ -75,10 +79,27 @@ function fdate(v){
     return new Date(+p[0],+p[1],+p[2]).toLocaleDateString('pt-BR');
   }
   const n=parseFloat(v);
-  if(!isNaN(n)){
-    return new Date(Math.round((n-25569)*86400*1000)).toLocaleDateString('pt-BR',{timeZone:'UTC'});
-  }
+  if(!isNaN(n))return new Date(Math.round((n-25569)*86400*1000)).toLocaleDateString('pt-BR',{timeZone:'UTC'});
   return v;
+}
+
+// Retorna bloco de documento: prefere CPF, usa RG se não tiver CPF
+function docBlock(cpf, rg){
+  if(cpf && cpf.trim()) return `<div class="doc-item"><span class="doc-label">CPF</span><span class="doc-val">${cpf}</span></div>`;
+  if(rg  && rg.trim())  return `<div class="doc-item"><span class="doc-label">RG</span><span class="doc-val">${rg}</span></div>`;
+  return '';
+}
+
+// Converte path AppSheet → URL pública Google Drive
+// O AppSheet salva as imagens numa pasta do Drive vinculada ao app.
+// Para funcionar, a coluna Foto precisa conter a URL pública do Drive.
+// Se vier caminho relativo (sem http), tenta montar URL de visualização do Drive.
+function fotoUrl(val){
+  if(!val || !val.trim()) return null;
+  // Já é URL completa
+  if(val.startsWith('http')) return val;
+  // Caminho AppSheet relativo — não temos como resolver sem o folder ID do Drive
+  return null;
 }
 
 async function load(){
@@ -93,11 +114,28 @@ async function load(){
     const json=JSON.parse(txt.match(/\{[\s\S]*\}/)[0]);
     if(!json.table||!json.table.rows||!json.table.rows.length){err('Funcionário não encontrado.');return;}
     const c=json.table.rows[0].c;
-    const g=(i)=>c[i]&&c[i].v!=null?(c[i].f||c[i].v):'';
-    const d={codigo:g(1),funcao:g(2),cadastro:c[3]?fdate(c[3].v||c[3].f):'—',nome:g(4),status:g(12)};
+    const g=(i)=>c[i]&&c[i].v!=null?(c[i].f||String(c[i].v)):'';
+    const d={
+      codigo:  g(1),
+      funcao:  g(2),
+      cadastro: c[3]?fdate(c[3].v||c[3].f):'—',
+      nome:    g(4),
+      cpf:     g(5),
+      rg:      g(6),
+      foto:    g(10),
+      status:  g(12),
+    };
     const st=status(d.status);
     const sl=SLABEL[st];
     const cod=d.codigo?'ATL-'+String(d.codigo).padStart(4,'0'):'—';
+    const imgUrl=fotoUrl(d.foto);
+
+    // Foto: URL direta ou iniciais
+    const fotoHTML = imgUrl
+      ? `<img src="${imgUrl}" alt="${d.nome}" onload="this.style.display='block'" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" style="display:none">
+         <div class="initials" style="display:flex">${initials(d.nome)}</div>`
+      : `<div class="initials">${initials(d.nome)}</div>`;
+
     document.getElementById('app').innerHTML=`
     <div class="wrap ${st}">
       <div class="badge">
@@ -105,7 +143,7 @@ async function load(){
         <div class="stripe"></div>
         <div class="body">
           <div class="ring">
-            <div class="inner"><div class="initials">${initials(d.nome)}</div></div>
+            <div class="inner">${fotoHTML}</div>
             <span class="pill">${sl}</span>
           </div>
           <div style="text-align:center">
@@ -118,7 +156,11 @@ async function load(){
           </div>
         </div>
         <div class="ftr">
-          <div><p class="cod-label">Código</p><p class="cod-val">${cod}</p></div>
+          <div>
+            <p class="cod-label">Código</p>
+            <p class="cod-val">${cod}</p>
+          </div>
+          ${docBlock(d.cpf, d.rg)}
         </div>
       </div>
       <span class="slabel">${sl}</span>
