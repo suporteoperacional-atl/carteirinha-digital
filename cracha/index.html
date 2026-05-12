@@ -433,10 +433,8 @@ async function loadBadge() {
     return;
   }
 
-  // Monta query GViz — busca pelo ID único gerado pelo AppSheet
-  const col   = CONFIG.COLS.id;
-  const valor = idParam;
-  const query = `SELECT * WHERE ${col} = '${valor}'`;
+  // Monta query GViz — busca pelo ID único (coluna A)
+  const query = `SELECT * WHERE A = '${idParam}'`;
   const url   = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq`
               + `?sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`
               + `&tq=${encodeURIComponent(query)}`
