@@ -49,6 +49,79 @@ body{min-height:100vh;background:#f0f2f5;display:flex;align-items:center;justify
 .ext-c{color:#1B3A6B;background:rgba(27,58,107,.08);border:1px solid rgba(27,58,107,.15)}
 .ext-d{color:#9ca3af;background:rgba(156,163,175,.1);border:1px solid rgba(156,163,175,.2)}
 @media(max-width:400px){.badge{width:260px}}
+
+/* ── IMPRESSÃO ── */
+.print-btn {
+  margin-top: 12px;
+  background: #0D2137;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.print-btn:hover { background: #1B3A6B; }
+.print-btn svg { width:14px; height:14px; flex-shrink:0; }
+
+@media print {
+  @page {
+    size: 8cm 11cm;
+    margin: 0;
+  }
+  html, body {
+    width: 8cm;
+    height: 11cm;
+    margin: 0;
+    padding: 0;
+    background: #fff !important;
+    display: block;
+  }
+  body { padding: 0 !important; }
+  .print-btn { display: none !important; }
+  .status-ext { display: none !important; }
+  .wrap {
+    gap: 0 !important;
+    width: 8cm;
+    height: 11cm;
+    display: block;
+  }
+  .badge {
+    width: 8cm !important;
+    height: 11cm !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden;
+    page-break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Proporcionar escala para caber em 8x11cm */
+  .badge-header { padding: 10px 14px 6px 12px !important; }
+  .badge-logo { height: 32px !important; }
+  .photo-frame { width: 72px !important; height: 72px !important; }
+  .photo-initials { font-size: 20px !important; }
+  .photo-section { padding: 4px 14px 8px !important; }
+  .status-pill { font-size: 6.5px !important; padding: 3px 12px !important; margin-bottom: 7px !important; }
+  .tricolor { margin: 0 14px !important; }
+  .fields { padding: 8px 14px 4px !important; gap: 6px !important; }
+  .field-label { font-size: 6px !important; }
+  .field-value { font-size: 11px !important; }
+  .field-value.sm { font-size: 9.5px !important; }
+  .badge-footer { padding: 7px 14px !important; margin-top: 4px !important; }
+  .code-label { font-size: 6px !important; }
+  .code-val { font-size: 11px !important; }
+  .sail-deco { width: 110px !important; height: 110px !important; }
+  .bottom-deco { width: 90px !important; height: 80px !important; }
+}
 </style>
 </head>
 <body>
@@ -118,6 +191,13 @@ async function load(){
     </div>
     <span class="status-ext ext-${s}">● ${sl}</span></div>`;
     if(d.foto)loadFoto(d.foto);
+
+    // Botão imprimir
+    const btn = document.createElement('button');
+    btn.className = 'print-btn';
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Imprimir Crachá`;
+    btn.onclick = () => window.print();
+    document.querySelector('.wrap').appendChild(btn);
   }catch(e){console.error(e);err('Erro ao carregar dados.');}
 }
 load();
