@@ -108,6 +108,16 @@ html.lote body{display:block;padding:0}
   .folha{box-shadow:none;margin:0;break-after:page;page-break-after:always}
   .folha:last-child{break-after:auto;page-break-after:auto}
 }
+/* caixa "imprimir vários" */
+.caixa-folha{margin-top:6px;background:#fff;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.06);max-width:378px;width:100%}
+.cf-tit{font-size:12px;font-weight:700;color:var(--azul-e)}
+.cf-tit span{font-weight:500;color:#6b7280}
+.cf-dica{font-size:11px;color:#6b7280;text-align:center;line-height:1.4}
+.caixa-folha .print-btn{margin-top:0;text-decoration:none}
+.print-btn.ok{background:#dcfce7;color:#15803d;border-color:#86efac}
+.link-folha{font-size:12.5px;color:var(--azul);font-weight:600}
+.slot .rm{position:absolute;top:-10px;right:-10px;width:26px;height:26px;border-radius:50%;border:none;background:#b91c1c;color:#fff;font-size:16px;line-height:26px;cursor:pointer;z-index:5;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+@media print{.caixa-folha,.slot .rm{display:none !important}}
 </style>
 </head>
 <body>
@@ -181,6 +191,13 @@ const ICO_PRINT=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 const ICO_IMG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
 const ICO_FOLHA=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
 
+/* ---------- fila da folha (guardada neste navegador) ---------- */
+const FILA='cracha_fila_folha';
+function fila(){try{return JSON.parse(localStorage.getItem(FILA)||'[]');}catch(e){return[];}}
+function salvarFila(l){try{localStorage.setItem(FILA,JSON.stringify(l));return true;}catch(e){return false;}}
+function urlFolha(l){return location.pathname+'?ids='+l.join(',');}
+const ICO_ADD=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`;
+
 /* ---------- imagem PNG 300 dpi (8 × 11 cm = 945 × 1299 px) ---------- */
 function carregarH2C(){
   if(window.html2canvas)return Promise.resolve();
@@ -211,6 +228,7 @@ function formulario(){
     <p>Digite um ID para ver um crachá, ou vários IDs separados por vírgula para montar a folha de impressão (4 crachás por folha A4).</p>
     <input id="campo" placeholder="Ex.: 12  ou  12, 15, 18, 22" autocomplete="off" inputmode="numeric">
     <button class="print-btn" type="submit">${ICO_FOLHA}Abrir</button>
+    ${fila().length?`<a class="link-folha" href="${urlFolha(fila())}">Ver folha salva (${fila().length} crachás)</a>`:''}
   </form>`;
   document.getElementById('f').onsubmit=e=>{e.preventDefault();const v=document.getElementById('campo').value.split(/[\s,;]+/).filter(Boolean);if(!v.length)return;location.search=(v.length===1?'?id=':'?ids=')+v.join(',');};
 }
@@ -226,7 +244,7 @@ async function load(){
     const rows=(json.table&&json.table.rows)||[];
     const mapa={};rows.forEach(r=>{mapa[chave(r.c[0])]=r.c;});
     const achados=[],faltando=[];
-    lista.forEach(id=>{const c=mapa[id]||mapa[String(id).replace(/^0+/,'')];c?achados.push(dados(c)):faltando.push(id);});
+    lista.forEach(id=>{const c=mapa[id]||mapa[String(id).replace(/^0+/,'')];if(c){const d=dados(c);d.id=id;achados.push(d);}else faltando.push(id);});
     if(!achados.length){err(lista.length>1?'Nenhum funcionário encontrado.':'Funcionário não encontrado.');return;}
     (new URLSearchParams(location.search).has('ids')||lista.length>1)?renderFolha(achados,faltando):renderUnico(achados[0]);
   }catch(e){console.error(e);err('Erro ao carregar dados.');}
@@ -239,8 +257,27 @@ function renderUnico(d){
     <div class="acoes">
       <button class="print-btn" id="bImp">${ICO_PRINT}Imprimir</button>
       <button class="print-btn sec" id="bPng">${ICO_IMG}Baixar imagem</button>
+    </div>
+    <div class="caixa-folha">
+      <p class="cf-tit">Imprimir vários numa folha A4 <span>(4 por folha)</span></p>
+      <div class="acoes">
+        <button class="print-btn sec" id="bAdd"></button>
+        <a class="print-btn" id="bVer">${ICO_FOLHA}<span></span></a>
+      </div>
+      <p class="cf-dica" id="cfDica"></p>
     </div></div>`;
   document.getElementById('bImp').onclick=()=>window.print();
+  const idAtual=ids()[0];
+  const atualizar=()=>{
+    const l=fila(),tem=l.includes(idAtual),bA=document.getElementById('bAdd'),bV=document.getElementById('bVer');
+    bA.innerHTML=tem?'✓ Na folha — remover':ICO_ADD+'Adicionar à folha';
+    bA.classList.toggle('ok',tem);
+    bV.style.display=l.length?'':'none';bV.href=urlFolha(l);
+    bV.querySelector('span').textContent='Ver folha ('+l.length+')';
+    document.getElementById('cfDica').textContent=l.length?`${l.length} crachá${l.length>1?'s':''} na folha · ${Math.ceil(l.length/POR_FOLHA)} folha${Math.ceil(l.length/POR_FOLHA)>1?'s':''} A4`:'Abra cada crachá pelo link do AppSheet e clique em "Adicionar à folha".';
+  };
+  document.getElementById('bAdd').onclick=()=>{let l=fila();l=l.includes(idAtual)?l.filter(x=>x!==idAtual):l.concat(idAtual);if(!salvarFila(l))alertaSuave('Este navegador bloqueou o armazenamento — use o modo folha pelo endereço ?ids=');atualizar();};
+  atualizar();
   const bp=document.getElementById('bPng');bp.onclick=()=>baixarPNG(0,arq(d),bp);
   if(d.foto)loadFoto(d.foto,0);
 }
@@ -252,7 +289,7 @@ function renderFolha(lista,faltando){
   const pg=document.createElement('style');pg.textContent='@page{size:A4 portrait;margin:0}';document.head.appendChild(pg);
   const folhas=[];
   for(let i=0;i<lista.length;i+=POR_FOLHA){
-    folhas.push(`<div class="folha">${lista.slice(i,i+POR_FOLHA).map((d,j)=>`<div class="slot">${badgeHTML(d,i+j)}</div>`).join('')}</div>`);
+    folhas.push(`<div class="folha">${lista.slice(i,i+POR_FOLHA).map((d,j)=>`<div class="slot">${badgeHTML(d,i+j)}<button class="rm" data-id="${d.id}" title="Tirar da folha">×</button></div>`).join('')}</div>`);
   }
   const nF=folhas.length;
   document.getElementById('app').innerHTML=`
@@ -260,10 +297,15 @@ function renderFolha(lista,faltando){
       <div><strong>${lista.length} crachá${lista.length>1?'s':''}</strong> · ${nF} folha${nF>1?'s':''} A4 · ${POR_FOLHA} por folha
         ${faltando.length?`<span class="aviso">Não encontrado${faltando.length>1?'s':''}: ${faltando.join(', ')}</span>`:''}
         <span class="dica">Na impressão, use escala 100% (tamanho real) e margens "Nenhuma".</span></div>
-      <button class="print-btn" id="bImp" disabled>${ICO_PRINT}Carregando fotos...</button>
+      <div class="acoes">
+        <button class="print-btn sec" id="bLimpar">Limpar folha</button>
+        <button class="print-btn" id="bImp" disabled>${ICO_PRINT}Carregando fotos...</button>
+      </div>
     </div>
     <div class="folhas">${folhas.join('')}</div>`;
   const b=document.getElementById('bImp');b.onclick=()=>window.print();
+  document.getElementById('bLimpar').onclick=()=>{salvarFila([]);alertaSuave('Folha limpa. Abra os próximos crachás e adicione novamente.');document.getElementById('bLimpar').disabled=true;};
+  document.querySelectorAll('.rm').forEach(x=>x.onclick=()=>{const nova=ids().filter(i=>i!==x.dataset.id);salvarFila(nova);location.search=nova.length?'?ids='+nova.join(','):'';});
   Promise.all(lista.map((d,k)=>d.foto?loadFoto(d.foto,k):null)).then(()=>{b.disabled=false;b.innerHTML=ICO_PRINT+'Imprimir folha'+(nF>1?'s':'');});
 }
 load();
